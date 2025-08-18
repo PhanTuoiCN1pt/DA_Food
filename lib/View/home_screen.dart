@@ -118,7 +118,7 @@ class HomeScreen extends StatelessWidget {
           child: IconButton(
             icon: const Icon(Icons.add, color: Colors.white, size: 28),
             onPressed: () {
-              // Todo:
+              Navigator.pushNamed(context, '/category');
             },
           ),
         ),
