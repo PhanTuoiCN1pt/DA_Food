@@ -1,9 +1,11 @@
-import 'package:da_food/Provider/tab_provider.dart';
-import 'package:da_food/View/widget/build_tab.dart';
-import 'package:da_food/View/widget/rounded_underline_indicator.dart';
+import 'package:da_food/features/food/view/widget/rounded_underline_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import '../model/food_model.dart';
+import '../view_model/foods_provider.dart';
+import '../view_model/tab_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -96,14 +98,66 @@ class HomeScreen extends StatelessWidget {
             }),
           ),
         ),
-        body: IndexedStack(
-          index: tabProvider.currentIndex,
-          children: const [
-            TabWidget(text: "Đây là tủ lạnh"),
-            TabWidget(text: "Đây là tủ đông"),
-            TabWidget(text: "Đây là nhà bếp"),
-          ],
+        body: Consumer<FoodsProvider>(
+          builder: (context, foodsProvider, child) {
+            final foods = foodsProvider.foods;
+
+            if (foods.isEmpty) {
+              return const Center(child: Text("Chưa có thực phẩm nào"));
+            }
+
+            // nhóm theo category
+            final Map<String, List<FoodItem>> grouped = {};
+            for (var f in foods) {
+              grouped.putIfAbsent(f.category, () => []).add(f);
+            }
+
+            return ListView(
+              children: grouped.entries.map((entry) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "${entry.key} (${entry.value.length})",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: entry.value.map((food) {
+                        return Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.fastfood,
+                                size: 40,
+                              ), // thay bằng ảnh
+                              const SizedBox(height: 4),
+                              Text(food.name, textAlign: TextAlign.center),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                );
+              }).toList(),
+            );
+          },
         ),
+
         floatingActionButton: Container(
           width: 60,
           height: 60,

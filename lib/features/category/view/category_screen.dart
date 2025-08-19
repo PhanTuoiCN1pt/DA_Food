@@ -1,6 +1,8 @@
-import 'package:da_food/Provider/category_provider.dart';
+import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'food_detail_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
   CategoryScreen({super.key});
@@ -150,17 +152,50 @@ class CategoryScreen extends StatelessWidget {
                 itemCount: subCategories[selectedCategory]!.length,
                 itemBuilder: (context, index) {
                   final subItem = subCategories[selectedCategory]![index];
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(subItem["icon"], size: 40, color: Colors.blue),
-                      const SizedBox(height: 6),
-                      Text(
-                        subItem["label"],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 13),
-                      ),
-                    ],
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(
+                            milliseconds: 400,
+                          ), // thời gian hiệu ứng
+                          pageBuilder: (_, animation, secondaryAnimation) =>
+                              FoodDetailScreen(
+                                category: selectedCategory,
+                                subCategory: subItem["label"],
+                              ),
+                          transitionsBuilder: (_, animation, __, child) {
+                            const begin = Offset(1.0, 0.0); // bắt đầu từ phải
+                            const end = Offset.zero; // kết thúc ở giữa
+                            const curve = Curves.easeInOut; // hiệu ứng mượt
+
+                            final tween = Tween(
+                              begin: begin,
+                              end: end,
+                            ).chain(CurveTween(curve: curve));
+                            final offsetAnimation = animation.drive(tween);
+
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(subItem["icon"], size: 40, color: Colors.blue),
+                        const SizedBox(height: 6),
+                        Text(
+                          subItem["label"],
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
