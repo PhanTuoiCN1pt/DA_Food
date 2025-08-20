@@ -19,6 +19,12 @@ class FoodProvider with ChangeNotifier {
     noteController.text = _food.note;
   }
 
+  void initFoodFromItem(FoodItem item) {
+    _food = item;
+    nameController.text = item.name;
+    noteController.text = item.note ?? "";
+  }
+
   void updateName(String name) {
     _food.name = name;
     notifyListeners();

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../helper/food_icon_helper.dart';
+import '../../food/model/food_model.dart';
 import '../../food/view_model/food_provider.dart';
 import '../../food/view_model/foods_provider.dart';
 
-class FoodDetailScreen extends StatelessWidget {
-  final String category;
-  final String subCategory;
+class FoodEditScreen extends StatelessWidget {
+  final FoodItem food;
 
-  const FoodDetailScreen({
-    super.key,
-    required this.category,
-    required this.subCategory,
-  });
+  const FoodEditScreen({super.key, required this.food});
 
   Future<void> _pickDate(BuildContext context, bool isRegister) async {
     final provider = Provider.of<FoodProvider>(context, listen: false);
@@ -39,25 +36,23 @@ class FoodDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<FoodProvider>(context, listen: false);
-    provider.initFood(category, subCategory);
+    provider.initFoodFromItem(food); // Khởi tạo dữ liệu từ FoodItem
 
     return Scaffold(
       appBar: AppBar(
         title: Consumer<FoodProvider>(
-          builder: (context, provider, _) =>
-              Text(provider.food.name), // tên có thể sửa
+          builder: (_, provider, __) => Text(provider.food.name),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: const [Icon(Icons.shopping_bag_outlined), SizedBox(width: 10)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Consumer<FoodProvider>(
-          builder: (context, provider, _) {
-            final food = provider.food;
+          builder: (_, provider, __) {
+            final f = provider.food;
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,10 +67,8 @@ class FoodDetailScreen extends StatelessWidget {
                           border: Border.all(color: Colors.grey.shade400),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
-                          Icons.apple,
-                          size: 50,
-                          color: Colors.red,
+                        child: Image.asset(
+                          FoodIconHelper.getIconByName(f.name),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -83,14 +76,13 @@ class FoodDetailScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            food.category,
+                            f.category,
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.blue,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          // Editable Name
                           SizedBox(
                             width: 200,
                             child: TextField(
@@ -102,7 +94,7 @@ class FoodDetailScreen extends StatelessWidget {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
-                              onChanged: provider.updateName, // cập nhật model
+                              onChanged: provider.updateName,
                             ),
                           ),
                         ],
@@ -123,7 +115,7 @@ class FoodDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       DropdownButton<String>(
-                        value: food.location,
+                        value: f.location,
                         items: ["Tủ lạnh", "Tủ đông", "Nhà bếp"]
                             .map(
                               (e) => DropdownMenuItem(value: e, child: Text(e)),
@@ -148,7 +140,7 @@ class FoodDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       DropdownButton<String>(
-                        value: food.subLocation,
+                        value: f.subLocation,
                         items: ["Không xác định", "Ngăn trên", "Ngăn dưới"]
                             .map(
                               (e) => DropdownMenuItem(value: e, child: Text(e)),
@@ -179,13 +171,13 @@ class FoodDetailScreen extends StatelessWidget {
                           color: Colors.blue,
                         ),
                         onPressed: () {
-                          if (food.quantity > 1) {
-                            provider.updateQuantity(food.quantity - 1);
+                          if (f.quantity > 1) {
+                            provider.updateQuantity(f.quantity - 1);
                           }
                         },
                       ),
                       Text(
-                        food.quantity.toString(),
+                        f.quantity.toString(),
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -194,7 +186,7 @@ class FoodDetailScreen extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.add_circle, color: Colors.blue),
                         onPressed: () =>
-                            provider.updateQuantity(food.quantity + 1),
+                            provider.updateQuantity(f.quantity + 1),
                       ),
                     ],
                   ),
@@ -214,7 +206,7 @@ class FoodDetailScreen extends StatelessWidget {
                       TextButton(
                         onPressed: () => _pickDate(context, true),
                         child: Text(
-                          "${food.registerDate.day}/${food.registerDate.month}/${food.registerDate.year}",
+                          "${f.registerDate.day}/${f.registerDate.month}/${f.registerDate.year}",
                         ),
                       ),
                     ],
@@ -234,7 +226,7 @@ class FoodDetailScreen extends StatelessWidget {
                       TextButton(
                         onPressed: () => _pickDate(context, false),
                         child: Text(
-                          "${food.expiryDate.day}/${food.expiryDate.month}/${food.expiryDate.year}",
+                          "${f.expiryDate.day}/${f.expiryDate.month}/${f.expiryDate.year}",
                         ),
                       ),
                       TextButton(
@@ -263,7 +255,7 @@ class FoodDetailScreen extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  // Button
+                  // Button Cập nhật
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -272,28 +264,19 @@ class FoodDetailScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        backgroundColor: Colors.blueAccent,
+                        backgroundColor: Colors.green,
                       ),
                       onPressed: () {
-                        final foodProvider = Provider.of<FoodProvider>(
-                          context,
-                          listen: false,
-                        );
                         final foodsProvider = Provider.of<FoodsProvider>(
                           context,
                           listen: false,
                         );
 
-                        foodsProvider.addFood(
-                          foodProvider.food,
-                        ); // thêm món ăn mới
-
-                        Navigator.pop(
-                          context,
-                        ); // quay về HomeScreen                        debugPrint("Lưu: ${food.name}, ${food.quantity}");
+                        foodsProvider.updateFood(f); // cập nhật food hiện tại
+                        Navigator.pop(context);
                       },
                       child: const Text(
-                        "THÊM VÀO",
+                        "CẬP NHẬT",
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),

@@ -1,8 +1,11 @@
+import 'package:da_food/features/category/view/food_edit_screen.dart';
 import 'package:da_food/features/food/view/widget/rounded_underline_indicator.dart';
+import 'package:da_food/helper/color_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../../helper/food_icon_helper.dart';
 import '../model/food_model.dart';
 import '../view_model/foods_provider.dart';
 import '../view_model/tab_provider.dart';
@@ -116,7 +119,7 @@ class HomeScreen extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: TColors.grey,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
@@ -136,49 +139,160 @@ class HomeScreen extends StatelessWidget {
                       grouped.putIfAbsent(f.category, () => []).add(f);
                     }
 
-                    return ListView(
-                      children: grouped.entries.map((entry) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "${entry.key} (${entry.value.length})",
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                    return TabBarView(
+                      physics: const BouncingScrollPhysics(),
+                      children: labels.map((locationLabel) {
+                        // lọc food theo location (tủ lạnh, tủ đông, nhà bếp)
+                        final filteredFoods = foods
+                            .where((f) => f.location == locationLabel)
+                            .toList();
+
+                        if (filteredFoods.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "Chưa có thực phẩm trong $locationLabel",
+                            ),
+                          );
+                        }
+
+                        // nhóm tiếp theo category
+                        final Map<String, List<FoodItem>> groupedByCategory =
+                            {};
+                        for (var f in filteredFoods) {
+                          groupedByCategory
+                              .putIfAbsent(f.category, () => [])
+                              .add(f);
+                        }
+
+                        return ListView(
+                          children: groupedByCategory.entries.map((entry) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // tiêu đề category
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  child: Text(
+                                    "${entry.key} (${entry.value.length})",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8, right: 8),
-                              child: Wrap(
-                                spacing: 18,
-                                runSpacing: 18,
-                                children: entry.value.map((food) {
-                                  return Container(
-                                    width: 80,
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        const Icon(Icons.fastfood, size: 40),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          food.name,
-                                          textAlign: TextAlign.center,
+                                // danh sách item trong category
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  child: Wrap(
+                                    spacing: 12,
+                                    runSpacing: 12,
+                                    children: entry.value.map((food) {
+                                      final daysLeft = food.expiryDate
+                                          .difference(DateTime.now())
+                                          .inDays;
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          // Chuyển sang FoodDetailScreen với category và subCategory
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  FoodEditScreen(food: food),
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 90,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Container(
+                                                  margin: const EdgeInsets.all(
+                                                    4,
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 2,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          6,
+                                                        ),
+                                                  ),
+                                                  child: Text(
+                                                    "D-$daysLeft",
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black54,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Image.asset(
+                                                FoodIconHelper.getIconByName(
+                                                  food.name,
+                                                ),
+                                                width: 40,
+                                                height: 40,
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Container(
+                                                width: double.maxFinite,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey,
+                                                  borderRadius:
+                                                      const BorderRadius.only(
+                                                        bottomRight:
+                                                            Radius.circular(10),
+                                                        bottomLeft:
+                                                            Radius.circular(10),
+                                                      ),
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    4.0,
+                                                  ),
+                                                  child: Text(
+                                                    food.name,
+                                                    textAlign: TextAlign.center,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
                         );
                       }).toList(),
                     );

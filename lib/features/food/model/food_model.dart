@@ -1,4 +1,7 @@
+import 'package:uuid/uuid.dart';
+
 class FoodItem {
+  String id; // ✅ thêm id
   String category;
   String name;
   int quantity;
@@ -9,6 +12,7 @@ class FoodItem {
   String note;
 
   FoodItem({
+    String? id, // cho phép tự truyền id hoặc tạo mới
     required this.category,
     required this.name,
     this.quantity = 1,
@@ -17,6 +21,7 @@ class FoodItem {
     DateTime? registerDate,
     DateTime? expiryDate,
     this.note = "",
-  }) : registerDate = registerDate ?? DateTime.now(),
+  }) : id = id ?? const Uuid().v4(), // nếu không truyền id, tự sinh UUID
+       registerDate = registerDate ?? DateTime.now(),
        expiryDate = expiryDate ?? DateTime.now().add(const Duration(days: 7));
 }

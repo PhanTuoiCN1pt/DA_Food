@@ -13,6 +13,14 @@ class FoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateFood(FoodItem updatedFood) {
+    final index = _foods.indexWhere((f) => f.id == updatedFood.id);
+    if (index != -1) {
+      _foods[index] = updatedFood;
+      notifyListeners();
+    }
+  }
+
   /// Xóa thực phẩm
   void removeFood(FoodItem food) {
     _foods.remove(food);
