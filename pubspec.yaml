@@ -30,6 +30,9 @@ dev_dependencies:
 flutter:
   assets:
     - assets/icons/
+    - assets/icons/category/
+    - assets/icons/fruit/
+    - assets/icons/vegetables/
 
 
   uses-material-design: true

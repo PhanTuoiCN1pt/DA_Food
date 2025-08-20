@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../helper/food_icon_helper.dart';
 import '../../food/view_model/food_provider.dart';
 import '../../food/view_model/foods_provider.dart';
 
@@ -65,17 +66,15 @@ class FoodDetailScreen extends StatelessWidget {
                   // Icon + Category + Editable Name
                   Row(
                     children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade400),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.apple,
-                          size: 50,
-                          color: Colors.red,
+                      SizedBox(
+                        width: 70,
+                        height: 70,
+                        // decoration: BoxDecoration(
+                        //   border: Border.all(color: Colors.grey.shade400),
+                        //   borderRadius: BorderRadius.circular(12),
+                        // ),
+                        child: Image.asset(
+                          FoodIconHelper.getIconByName(provider.food.name),
                         ),
                       ),
                       const SizedBox(width: 16),

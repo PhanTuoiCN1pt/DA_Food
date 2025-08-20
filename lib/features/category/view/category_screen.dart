@@ -2,44 +2,11 @@ import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/data/category_data.dart';
 import 'food_detail_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
   CategoryScreen({super.key});
-
-  final List<Map<String, dynamic>> categories = const [
-    {"icon": Icons.local_grocery_store, "label": "Trái cây"},
-    {"icon": Icons.eco, "label": "Rau"},
-    {"icon": Icons.set_meal, "label": "Thịt"},
-    {"icon": Icons.set_meal_outlined, "label": "Thủy sản"},
-    {"icon": Icons.icecream, "label": "Chế phẩm từ sữa"},
-    {"icon": Icons.restaurant, "label": "Món ăn"},
-    {"icon": Icons.local_drink, "label": "Đồ uống"},
-    {"icon": Icons.wine_bar, "label": "Rượu"},
-    {"icon": Icons.soup_kitchen, "label": "Nước sốt"},
-    {"icon": Icons.spa, "label": "Gia vị"},
-    {"icon": Icons.bakery_dining, "label": "Bánh mì"},
-    {"icon": Icons.cake, "label": "Tráng miệng"},
-    {"icon": Icons.nature, "label": "Quả hạch"},
-    {"icon": Icons.rice_bowl, "label": "Ngũ cốc"},
-    {"icon": Icons.more_horiz, "label": "Vân vân"},
-  ];
-
-  final Map<String, List<Map<String, dynamic>>> subCategories = {
-    "Trái cây": [
-      {"icon": Icons.apple, "label": "Táo"},
-      {"icon": Icons.energy_savings_leaf, "label": "Chuối"},
-      {"icon": Icons.emoji_food_beverage, "label": "Cam"},
-    ],
-    "Rau": [
-      {"icon": Icons.eco, "label": "Rau muống"},
-      {"icon": Icons.eco, "label": "Bắp cải"},
-    ],
-    "Thịt": [
-      {"icon": Icons.set_meal, "label": "Thịt bò"},
-      {"icon": Icons.set_meal, "label": "Thịt gà"},
-    ],
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -105,10 +72,10 @@ class CategoryScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          item["icon"],
-                          size: 40,
-                          color: isSelected ? Colors.white : Colors.orange,
+                        Image.asset(
+                          item["icon"], // 👈 đổi từ IconData sang đường dẫn
+                          width: 40,
+                          height: 40,
                         ),
                         const SizedBox(height: 6),
                         Text(
@@ -131,7 +98,7 @@ class CategoryScreen extends StatelessWidget {
             if (selectedCategory != null &&
                 subCategories.containsKey(selectedCategory)) ...[
               const Padding(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.only(left: 10, right: 10),
                 child: Text(
                   "Danh mục con",
                   style: TextStyle(
@@ -144,7 +111,7 @@ class CategoryScreen extends StatelessWidget {
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
                   childAspectRatio: 0.75,
@@ -152,49 +119,57 @@ class CategoryScreen extends StatelessWidget {
                 itemCount: subCategories[selectedCategory]!.length,
                 itemBuilder: (context, index) {
                   final subItem = subCategories[selectedCategory]![index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          transitionDuration: const Duration(
-                            milliseconds: 400,
-                          ), // thời gian hiệu ứng
-                          pageBuilder: (_, animation, secondaryAnimation) =>
-                              FoodDetailScreen(
-                                category: selectedCategory,
-                                subCategory: subItem["label"],
-                              ),
-                          transitionsBuilder: (_, animation, __, child) {
-                            const begin = Offset(1.0, 0.0); // bắt đầu từ phải
-                            const end = Offset.zero; // kết thúc ở giữa
-                            const curve = Curves.easeInOut; // hiệu ứng mượt
+                  return Material(
+                    color: Colors.transparent, // giữ trong suốt
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            transitionDuration: const Duration(
+                              milliseconds: 700,
+                            ),
+                            pageBuilder: (_, animation, __) => FoodDetailScreen(
+                              category: selectedCategory,
+                              subCategory: subItem["label"],
+                            ),
+                            transitionsBuilder: (_, animation, __, child) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
 
-                            final tween = Tween(
-                              begin: begin,
-                              end: end,
-                            ).chain(CurveTween(curve: curve));
-                            final offsetAnimation = animation.drive(tween);
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
 
-                            return SlideTransition(
-                              position: offsetAnimation,
-                              child: child,
-                            );
-                          },
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(subItem["icon"], width: 40, height: 40),
+                            const SizedBox(height: 6),
+                            Text(
+                              subItem["label"],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(subItem["icon"], size: 40, color: Colors.blue),
-                        const SizedBox(height: 6),
-                        Text(
-                          subItem["label"],
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 13),
-                        ),
-                      ],
+                      ),
                     ),
                   );
                 },
