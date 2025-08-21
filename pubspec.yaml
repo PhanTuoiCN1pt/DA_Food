@@ -33,6 +33,10 @@ flutter:
     - assets/icons/category/
     - assets/icons/fruit/
     - assets/icons/vegetables/
+    - assets/icons/meats/
+    - assets/icons/seafood/
+    - assets/icons/dairyMilk/
+    - assets/icons/drink/
 
 
   uses-material-design: true
