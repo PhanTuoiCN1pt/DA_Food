@@ -37,6 +37,13 @@ flutter:
     - assets/icons/seafood/
     - assets/icons/dairyMilk/
     - assets/icons/drink/
+    - assets/icons/alcohol/
+    - assets/icons/sauce/
+    - assets/icons/spices/
+    - assets/icons/bread/
+    - assets/icons/desserts/
+    - assets/icons/nuts/
+    - assets/icons/grains/
 
 
   uses-material-design: true

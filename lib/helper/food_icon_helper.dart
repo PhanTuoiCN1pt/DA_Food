@@ -208,43 +208,246 @@ class FoodIconHelper {
       case "dong biển":
         return FoodType.seaweed;
 
-      // ----- Sữa -----
-      case "sữa":
-        return FoodType.milk;
+      // --- Sữa & chế phẩm từ sữa ---
+      case "sữa hạnh nhân":
+        return FoodType.almondMilk;
       case "phô mai":
         return FoodType.cheese;
+      case "trà sữa":
+        return FoodType.bubbleTea;
+      case "burrata":
+        return FoodType.burrata;
+      case "bơ sữa":
+        return FoodType.butter;
+      case "sữa":
+        return FoodType.milk;
+      case "phô mai mozzarella":
+        return FoodType.mozzarella;
+      case "probi":
+        return FoodType.probi;
       case "sữa chua":
         return FoodType.yogurt;
+      case "kem tươi":
+        return FoodType.whippedCream;
+      case "sữa ngô":
+        return FoodType.cornMilk;
+      case "lassi":
+        return FoodType.lassi;
 
-      // ----- Món ăn -----
-      case "cơm":
-        return FoodType.rice;
+      // --- Đồ uống ---
+      case "coca":
+        return FoodType.coke;
+      case "cà phê":
+        return FoodType.coffee;
+      case "nước cam":
+        return FoodType.orangeJuice;
+      case "nước chanh":
+        return FoodType.lemonade;
+      case "nước dừa":
+        return FoodType.coconutDrink;
+      case "nước ngọt có ga":
+        return FoodType.softDrink;
+      case "nước suối":
+        return FoodType.water;
+      case "nước tăng lực":
+        return FoodType.energyDrink;
+      case "nước ép":
+        return FoodType.juice;
+      case "nước điện giải":
+        return FoodType.sportDrink;
+      case "trà":
+        return FoodType.tea;
+      case "trà sữa trân châu":
+        return FoodType.bubbleTeaDrink;
+      case "trà túi lọc":
+        return FoodType.teaBag;
+      case "trà gừng":
+        return FoodType.gingerTea;
+      case "sôcola nóng":
+        return FoodType.hotChocolate;
+      case "trà chanh":
+        return FoodType.lemonTea;
+
+      // --- Đồ uống có cồn ---
+      case "bia":
+        return FoodType.beer;
+      case "rượu mạnh":
+        return FoodType.brandy;
+      case "sâm panh":
+        return FoodType.champagne;
+      case "cocktail":
+        return FoodType.cocktail;
+      case "rượu thảo mộc":
+        return FoodType.herbalLiquor;
+      case "rượu rum":
+        return FoodType.rum;
+      case "rượu hoa quả":
+        return FoodType.sangria;
+      case "sake":
+        return FoodType.sake;
+      case "vodka":
+        return FoodType.vodka;
+      case "whiskey":
+        return FoodType.whiskey;
+      case "rượu vang":
+        return FoodType.wine;
+      case "soju":
+        return FoodType.soju;
+      case "strongbow":
+        return FoodType.strongbow;
+
+      // --- Nước sốt ---
+      case "tương ớt":
+        return FoodType.hotSauce;
+      case "tương cà":
+        return FoodType.ketchup;
+      case "nước mắm":
+        return FoodType.fishSauce;
+      case "sốt mayonnaise":
+        return FoodType.mayonnaise;
+      case "mù tạt":
+        return FoodType.mustard;
+      case "wasabi":
+        return FoodType.wasabi;
+      case "xì dầu":
+        return FoodType.soySauce;
+      case "tương bần":
+        return FoodType.tuongBan;
+      case "mật ong":
+        return FoodType.honey;
+      case "sốt bbq":
+        return FoodType.bbqSauce;
+      case "giấm gạo":
+        return FoodType.riceVinegar;
+      case "giấm táo":
+        return FoodType.appleCiderVinegar;
+      case "mứt dâu":
+        return FoodType.strawberryJam;
+
+      // --- Gia vị ---
+      case "muối":
+        return FoodType.salt;
+      case "bột ớt":
+        return FoodType.chiliPowder;
+      case "đường":
+        return FoodType.sugar;
+      case "quế":
+        return FoodType.cinnamon;
+      case "bột nghệ":
+        return FoodType.turmeric;
+      case "gừng":
+        return FoodType.gingerSpice;
+      case "tỏi":
+        return FoodType.garlic;
+      case "sả":
+        return FoodType.lemongrass;
+      case "tiêu":
+        return FoodType.pepperSpice;
+      case "sa tế":
+        return FoodType.sate;
+      case "hạt nêm":
+        return FoodType.seasoning;
+      case "bột ngọt":
+        return FoodType.msg;
+
+      // --- Bánh mì & ngũ cốc ---
+      case "bánh mì vòng":
+        return FoodType.bagel;
       case "bánh mì":
         return FoodType.bread;
-      case "món ăn":
-        return FoodType.dinner;
-
-      // ----- Đồ uống -----
-      case "nước ngọt":
-        return FoodType.softDrink;
-      case "rượu":
-        return FoodType.alcohol;
-      case "nước":
-        return FoodType.water;
-
-      // ----- Gia vị -----
-      case "nước sốt":
-        return FoodType.ketchup;
-      case "gia vị":
-        return FoodType.spice;
+      case "bánh mì tròn":
+        return FoodType.breadCircle;
+      case "bánh mì brioche":
+        return FoodType.brioche;
+      case "donut":
+        return FoodType.donut;
+      case "sandwich":
+        return FoodType.sandwich;
+      case "bánh mì pate":
+        return FoodType.pateBread;
+      case "pizza":
+        return FoodType.pizza;
+      case "bánh mì sandwich":
+        return FoodType.sandwichLoaf;
+      case "pancake":
+        return FoodType.pancake;
 
       // ----- Tráng miệng -----
+      case "chè":
+        return FoodType.sweetSoup;
       case "kem":
         return FoodType.iceCream;
+      case "bánh ngọt":
+        return FoodType.cake;
+      case "bánh tar trứng":
+        return FoodType.eggTart;
+      case "sô cô la":
+        return FoodType.chocolate;
+      case "kẹo":
+        return FoodType.candy;
+      case "caramel":
+        return FoodType.caramel;
+      case "kẹo cao su":
+        return FoodType.chewingGum;
+      case "bánh quy":
+        return FoodType.cookie;
+      case "thanh năng lượng":
+        return FoodType.energyBar;
+      case "pudding":
+        return FoodType.pudding;
+      case "bánh cuộn":
+        return FoodType.swissRoll;
+      case "snack khoai tây":
+        return FoodType.potatoChips;
+      case "bim bim":
+        return FoodType.snack;
+      case "bánh trung thu":
+        return FoodType.moonCake;
 
-      // ----- Khác -----
-      case "quả hạch":
-        return FoodType.nut;
+      // ----- Quả hạch -----
+      case "hạt bí":
+        return FoodType.pumpkinSeed;
+      case "hạt hướng dương":
+        return FoodType.sunflowerSeed;
+      case "hạt điều":
+        return FoodType.cashew;
+      case "hạt óc chó":
+        return FoodType.walnut;
+      case "hạnh nhân":
+        return FoodType.almond;
+      case "hạt dẻ":
+        return FoodType.chestnut;
+      case "mắc ca":
+        return FoodType.macadamia;
+      case "đậu phộng":
+        return FoodType.peanut;
+      case "đậu nành":
+        return FoodType.soybean;
+      case "hạt sen":
+        return FoodType.lotusSeed;
+      case "hạt dẻ cười":
+        return FoodType.pistachio;
+      case "cacao":
+        return FoodType.cacao;
+
+      // ----- Ngũ cốc -----
+      case "gạo":
+        return FoodType.rice;
+      case "đậu đen":
+        return FoodType.blackBean;
+      case "đậu đỏ":
+        return FoodType.redBean;
+      case "yến mạch":
+        return FoodType.oat;
+      case "hạt kê":
+        return FoodType.millet;
+      case "lúa mạch":
+        return FoodType.barley;
+      case "gạo lứt":
+        return FoodType.brownRice;
+      case "hạt ngô":
+        return FoodType.cornHat;
+
       case "vân vân":
         return FoodType.etc;
 
@@ -258,139 +461,139 @@ class FoodIconHelper {
     switch (type) {
       // ----- Trái cây -----
       case FoodType.apple:
-        return "icons/fruit/apple.png";
+        return "assets/icons/fruit/apple.png";
       case FoodType.apricot:
-        return "icons/fruit/apricot.png";
+        return "assets/icons/fruit/apricot.png";
       case FoodType.avocado:
-        return "icons/fruit/avocado.png";
+        return "assets/icons/fruit/avocado.png";
       case FoodType.banana:
-        return "icons/fruit/banana.png";
+        return "assets/icons/fruit/banana.png";
       case FoodType.blueberry:
-        return "icons/fruit/blueberry.png";
+        return "assets/icons/fruit/blueberry.png";
       case FoodType.cherry:
-        return "icons/fruit/berry.png";
+        return "assets/icons/fruit/berry.png";
       case FoodType.dragonFruit:
-        return "icons/fruit/dragon-fruit.png";
+        return "assets/icons/fruit/dragon-fruit.png";
       case FoodType.grape:
-        return "icons/fruit/grapes.png";
+        return "assets/icons/fruit/grapes.png";
       case FoodType.grapefruit:
-        return "icons/fruit/grapefruit.png";
+        return "assets/icons/fruit/grapefruit.png";
       case FoodType.kiwi:
-        return "icons/fruit/kiwi.png";
+        return "assets/icons/fruit/kiwi.png";
       case FoodType.lemon:
-        return "icons/fruit/lemon.png";
+        return "assets/icons/fruit/lemon.png";
       case FoodType.lime:
-        return "icons/fruit/lime.png";
+        return "assets/icons/fruit/lime.png";
       case FoodType.durian:
-        return "icons/fruit/durian.png";
+        return "assets/icons/fruit/durian.png";
       case FoodType.mango:
-        return "icons/fruit/mango.png";
+        return "assets/icons/fruit/mango.png";
       case FoodType.pear:
-        return "icons/fruit/pear.png";
+        return "assets/icons/fruit/pear.png";
       case FoodType.pineapple:
-        return "icons/fruit/pineapple.png";
+        return "assets/icons/fruit/pineapple.png";
       case FoodType.pomegranate:
-        return "icons/fruit/pomegranate.png";
+        return "assets/icons/fruit/pomegranate.png";
       case FoodType.rambutan:
-        return "icons/fruit/rambutan.png";
+        return "assets/icons/fruit/rambutan.png";
       case FoodType.watermelon:
-        return "icons/fruit/watermelon.png";
+        return "assets/icons/fruit/watermelon.png";
       case FoodType.tomato:
-        return "icons/fruit/tomato.png";
+        return "assets/icons/fruit/tomato.png";
       case FoodType.strawberry:
-        return "icons/fruit/strawberrry.png";
+        return "assets/icons/fruit/strawberrry.png";
       case FoodType.melon:
-        return "icons/fruit/melon.png";
+        return "assets/icons/fruit/melon.png";
       case FoodType.cantaloupe:
-        return "icons/fruit/melon (1).png";
+        return "assets/icons/fruit/melon (1).png";
       case FoodType.lychee:
-        return "icons/fruit/lychee.png";
+        return "assets/icons/fruit/lychee.png";
       case FoodType.persimmon:
-        return "icons/fruit/persimmon.png";
+        return "assets/icons/fruit/persimmon.png";
       case FoodType.papaya:
-        return "icons/fruit/papaya.png";
+        return "assets/icons/fruit/papaya.png";
       case FoodType.plum:
-        return "icons/fruit/plum.png";
+        return "assets/icons/fruit/plum.png";
       case FoodType.longan:
-        return "icons/fruit/longan.png";
+        return "assets/icons/fruit/longan.png";
       case FoodType.coconut:
-        return "icons/fruit/coconut.png";
+        return "assets/icons/fruit/coconut.png";
       case FoodType.guava:
-        return "icons/fruit/guava.png";
+        return "assets/icons/fruit/guava.png";
 
       // ----- Rau -----
       case FoodType.chineseCabbage:
-        return "icons/vegetables/chinese-cabbage.png";
+        return "assets/icons/vegetables/chinese-cabbage.png";
       case FoodType.cabbage:
-        return "icons/vegetables/cabbage.png";
+        return "assets/icons/vegetables/cabbage.png";
       case FoodType.carrot:
-        return "icons/vegetables/carrots.png";
+        return "assets/icons/vegetables/carrots.png";
       case FoodType.onion:
-        return "icons/vegetables/onion.png";
+        return "assets/icons/vegetables/onion.png";
       case FoodType.eggplant:
-        return "icons/vegetables/eggplant.png";
+        return "assets/icons/vegetables/eggplant.png";
       case FoodType.pumpkin:
-        return "icons/vegetables/pumpkin.png";
+        return "assets/icons/vegetables/pumpkin.png";
       case FoodType.greenOnion:
-        return "icons/vegetables/green-onion.png";
+        return "assets/icons/vegetables/green-onion.png";
       case FoodType.chives:
-        return "icons/vegetables/chives.png";
+        return "assets/icons/vegetables/chives.png";
       case FoodType.lotusRoot:
-        return "icons/vegetables/lotus-root.png";
+        return "assets/icons/vegetables/lotus-root.png";
       case FoodType.potato:
-        return "icons/vegetables/potato.png";
+        return "assets/icons/vegetables/potato.png";
       case FoodType.mushroom:
-        return "icons/vegetables/mushroom.png";
+        return "assets/icons/vegetables/mushroom.png";
       case FoodType.onionTay:
-        return "icons/vegetables/oniontay.png";
+        return "assets/icons/vegetables/oniontay.png";
       case FoodType.bokChoy:
-        return "icons/vegetables/bok-choy.png";
+        return "assets/icons/vegetables/bok-choy.png";
       case FoodType.sprouts:
-        return "icons/vegetables/sprouts.png";
+        return "assets/icons/vegetables/sprouts.png";
       case FoodType.sweetPotato:
-        return "icons/vegetables/sweet-potato.png";
+        return "assets/icons/vegetables/sweet-potato.png";
       case FoodType.cucumber:
-        return "icons/vegetables/cucumber.png";
+        return "assets/icons/vegetables/cucumber.png";
       case FoodType.taro:
-        return "icons/vegetables/taro.png";
+        return "assets/icons/vegetables/taro.png";
       case FoodType.perilla:
-        return "icons/vegetables/perilla.png";
+        return "assets/icons/vegetables/perilla.png";
       case FoodType.corn:
-        return "icons/vegetables/corn.png";
+        return "assets/icons/vegetables/corn.png";
       case FoodType.kohlrabi:
-        return "icons/vegetables/kohlrabi.png";
+        return "assets/icons/vegetables/kohlrabi.png";
       case FoodType.bingo:
-        return "icons/vegetables/bingo.png";
+        return "assets/icons/vegetables/bingo.png";
       case FoodType.chili:
-        return "icons/vegetables/chili.png";
+        return "assets/icons/vegetables/chili.png";
       case FoodType.bellPepper:
-        return "icons/vegetables/bell-pepper.png";
+        return "assets/icons/vegetables/bell-pepper.png";
       case FoodType.cauliflower:
-        return "icons/vegetables/cauliflower.png";
+        return "assets/icons/vegetables/cauliflower.png";
       case FoodType.broccoli:
-        return "icons/vegetables/healthy.png";
+        return "assets/icons/vegetables/healthy.png";
       case FoodType.greenBeans:
-        return "icons/vegetables/green-beans.png";
+        return "assets/icons/vegetables/green-beans.png";
       case FoodType.food:
-        return "icons/vegetables/food.png";
+        return "assets/icons/vegetables/food.png";
       case FoodType.zucchini:
-        return "icons/vegetables/zucchini.png";
+        return "assets/icons/vegetables/zucchini.png";
       case FoodType.coriander:
-        return "icons/vegetables/coriander.png";
+        return "assets/icons/vegetables/coriander.png";
       case FoodType.garlic:
-        return "icons/vegetables/garlic.png";
+        return "assets/icons/vegetables/garlic.png";
       case FoodType.bitterGourd:
-        return "icons/vegetables/bitter-gourd.png";
+        return "assets/icons/vegetables/bitter-gourd.png";
       case FoodType.basil:
-        return "icons/vegetables/basil.png";
+        return "assets/icons/vegetables/basil.png";
       case FoodType.morningGlory:
-        return "icons/vegetables/spinach.png";
+        return "assets/icons/vegetables/spinach.png";
       case FoodType.spinach1:
-        return "icons/vegetables/spinach1.png";
+        return "assets/icons/vegetables/spinach1.png";
       case FoodType.rauNgot:
-        return "icons/vegetables/2.png";
+        return "assets/icons/vegetables/2.png";
       case FoodType.bamboo:
-        return "icons/vegetables/bamboo.png";
+        return "assets/icons/vegetables/bamboo.png";
 
       // --- Thịt ---
       case FoodType.pork:
@@ -460,43 +663,245 @@ class FoodIconHelper {
       case FoodType.seaweed:
         return "assets/icons/seafood/seaweed.png";
 
-      // ----- Sữa -----
-      case FoodType.milk:
+      // --- Chế phẩm từ sữa ---
+      case FoodType.almondMilk:
+        return "assets/icons/dairyMilk/almond-milk.png";
       case FoodType.cheese:
+        return "assets/icons/dairyMilk/cheese.png";
+      case FoodType.bubbleTea:
+        return "assets/icons/dairyMilk/bubble-tea.png";
+      case FoodType.burrata:
+        return "assets/icons/dairyMilk/burrata.png";
+      case FoodType.butter:
+        return "assets/icons/dairyMilk/butter.png";
+      case FoodType.milk:
+        return "assets/icons/dairyMilk/milk.png";
+      case FoodType.mozzarella:
+        return "assets/icons/dairyMilk/mozzarella.png";
+      case FoodType.probi:
+        return "assets/icons/dairyMilk/probiotic.png";
       case FoodType.yogurt:
-        return "icons/category/dairy.png";
+        return "assets/icons/dairyMilk/yogurt.png";
+      case FoodType.whippedCream:
+        return "assets/icons/dairyMilk/whipped-cream.png";
+      case FoodType.cornMilk:
+        return "assets/icons/dairyMilk/corn.png";
+      case FoodType.lassi:
+        return "assets/icons/dairyMilk/lassi.png";
 
-      // ----- Món ăn -----
-      case FoodType.rice:
-        return "icons/category/rice.png";
-      case FoodType.bread:
-        return "icons/category/bakery.png";
-      case FoodType.dinner:
-        return "icons/category/dinner.png";
-
-      // ----- Đồ uống -----
+      // --- Đồ uống ---
+      case FoodType.coke:
+        return "assets/icons/drink/coke.png";
+      case FoodType.coffee:
+        return "assets/icons/drink/coffee-cup.png";
+      case FoodType.orangeJuice:
+        return "assets/icons/drink/orange-juice.png";
+      case FoodType.lemonade:
+        return "assets/icons/drink/lemonade.png";
+      case FoodType.coconutDrink:
+        return "assets/icons/drink/coconut-drink.png";
       case FoodType.softDrink:
-        return "icons/category/soft-drink.png";
-      case FoodType.alcohol:
-        return "icons/category/drink.png";
+        return "assets/icons/drink/soft-drink.png";
       case FoodType.water:
-        return "icons/category/drink.png";
+        return "assets/icons/drink/water-bottle.png";
+      case FoodType.energyDrink:
+        return "assets/icons/drink/energy-drink.png";
+      case FoodType.juice:
+        return "assets/icons/drink/juice.png";
+      case FoodType.sportDrink:
+        return "assets/icons/drink/sport.png";
+      case FoodType.tea:
+        return "assets/icons/drink/herbal-tea.png";
+      case FoodType.bubbleTeaDrink:
+        return "assets/icons/drink/bubble-tea.png";
+      case FoodType.teaBag:
+        return "assets/icons/drink/tea-bag.png";
+      case FoodType.gingerTea:
+        return "assets/icons/drink/ginger-tea.png";
+      case FoodType.hotChocolate:
+        return "assets/icons/drink/hot-chocolate.png";
+      case FoodType.lemonTea:
+        return "assets/icons/drink/lemon-tea.png";
 
-      // ----- Gia vị -----
+      // --- Đồ uống có cồn ---
+      case FoodType.beer:
+        return "assets/icons/alcohol/beer.png";
+      case FoodType.brandy:
+        return "assets/icons/alcohol/brandy.png";
+      case FoodType.champagne:
+        return "assets/icons/alcohol/champagne.png";
+      case FoodType.cocktail:
+        return "assets/icons/alcohol/coktail.png";
+      case FoodType.herbalLiquor:
+        return "assets/icons/alcohol/liqueur-coffee.png";
+      case FoodType.rum:
+        return "assets/icons/alcohol/rum.png";
+      case FoodType.sangria:
+        return "assets/icons/alcohol/sangria.png";
+      case FoodType.sake:
+        return "assets/icons/alcohol/sake.png";
+      case FoodType.vodka:
+        return "assets/icons/alcohol/vodka.png";
+      case FoodType.whiskey:
+        return "assets/icons/alcohol/whiskey.png";
+      case FoodType.wine:
+        return "assets/icons/alcohol/wine-bottle.png";
+      case FoodType.soju:
+        return "assets/icons/alcohol/soju.png";
+      case FoodType.strongbow:
+        return "assets/icons/alcohol/drinks.png";
+
+      // --- Nước sốt ---
+      case FoodType.hotSauce:
+        return "assets/icons/sauce/hot-sauce.png";
       case FoodType.ketchup:
-        return "icons/category/ketchup.png";
-      case FoodType.spice:
-        return "icons/category/spice.png";
+        return "assets/icons/sauce/ketchup.png";
+      case FoodType.fishSauce:
+        return "assets/icons/sauce/sauce12.png";
+      case FoodType.mayonnaise:
+        return "assets/icons/sauce/mayonnaise.png";
+      case FoodType.mustard:
+        return "assets/icons/sauce/mustard.png";
+      case FoodType.wasabi:
+        return "assets/icons/sauce/wasabi.png";
+      case FoodType.soySauce:
+        return "assets/icons/sauce/soy-sauce.png";
+      case FoodType.tuongBan:
+        return "assets/icons/sauce/soy-sauce1.png";
+      case FoodType.honey:
+        return "assets/icons/sauce/honey.png";
+      case FoodType.bbqSauce:
+        return "assets/icons/sauce/sauce.png";
+      case FoodType.riceVinegar:
+        return "assets/icons/sauce/rice-wine.png";
+      case FoodType.appleCiderVinegar:
+        return "assets/icons/sauce/apple-cider-vinegar.png";
+      case FoodType.strawberryJam:
+        return "assets/icons/sauce/jam.png";
+
+      // --- Gia vị ---
+      case FoodType.salt:
+        return "assets/icons/spices/salt.png";
+      case FoodType.chiliPowder:
+        return "assets/icons/spices/chilli-pepper.png";
+      case FoodType.sugar:
+        return "assets/icons/spices/sugar.png";
+      case FoodType.cinnamon:
+        return "assets/icons/spices/cinnamon.png";
+      case FoodType.turmeric:
+        return "assets/icons/spices/food.png";
+      case FoodType.gingerSpice:
+        return "assets/icons/spices/ginger.png";
+      case FoodType.garlic:
+        return "assets/icons/spices/garlic.png";
+      case FoodType.lemongrass:
+        return "assets/icons/spices/lemongrass.png";
+      case FoodType.pepperSpice:
+        return "assets/icons/spices/pepper.png";
+      case FoodType.sate:
+        return "assets/icons/spices/chili-sauce.png";
+      case FoodType.seasoning:
+        return "assets/icons/spices/salt-and-pepper.png";
+      case FoodType.msg:
+        return "assets/icons/spices/monosodium-glutamate.png";
+
+      // --- Bánh mì ---
+      case FoodType.bagel:
+        return "assets/icons/bread/bagel.png";
+      case FoodType.bread:
+        return "assets/icons/bread/bread.png";
+      case FoodType.breadCircle:
+        return "assets/icons/bread/bread_circle.png";
+      case FoodType.brioche:
+        return "assets/icons/bread/brioche.png";
+      case FoodType.donut:
+        return "assets/icons/bread/donut.png";
+      case FoodType.sandwich:
+        return "assets/icons/bread/sandwich.png";
+      case FoodType.pateBread:
+        return "assets/icons/bread/sandwich_1.png";
+      case FoodType.pizza:
+        return "assets/icons/bread/pizza.png";
+      case FoodType.sandwichLoaf:
+        return "assets/icons/bread/bread-loaf.png";
+      case FoodType.pancake:
+        return "assets/icons/bread/pancakes.png";
 
       // ----- Tráng miệng -----
+      case FoodType.sweetSoup:
+        return "assets/icons/desserts/tong-sui.png";
       case FoodType.iceCream:
-        return "icons/category/ice-cream.png";
+        return "assets/icons/desserts/ice-cream.png";
+      case FoodType.cake:
+        return "assets/icons/desserts/strawberry-cake.png";
+      case FoodType.eggTart:
+        return "assets/icons/desserts/egg-tart.png";
+      case FoodType.chocolate:
+        return "assets/icons/desserts/chocolate.png";
+      case FoodType.candy:
+        return "assets/icons/desserts/candy.png";
+      case FoodType.caramel:
+        return "assets/icons/desserts/caramel.png";
+      case FoodType.chewingGum:
+        return "assets/icons/desserts/chewing-gum.png";
+      case FoodType.cookie:
+        return "assets/icons/desserts/cookie.png";
+      case FoodType.energyBar:
+        return "assets/icons/desserts/energy-bar.png";
+      case FoodType.pudding:
+        return "assets/icons/desserts/caramel-pudding.png";
+      case FoodType.swissRoll:
+        return "assets/icons/desserts/swiss-roll.png";
+      case FoodType.potatoChips:
+        return "assets/icons/desserts/potato-chips.png";
+      case FoodType.snack:
+        return "assets/icons/desserts/snack.png";
+      case FoodType.moonCake:
+        return "assets/icons/desserts/moon-cake.png";
 
-      // ----- Khác -----
-      case FoodType.nut:
-        return "icons/category/dried-fruits.png";
-      case FoodType.etc:
-        return "icons/category/food.png";
+      // ----- Quả hạch -----
+      case FoodType.pumpkinSeed:
+        return "assets/icons/nuts/snack.png";
+      case FoodType.sunflowerSeed:
+        return "assets/icons/nuts/sunflower-seed.png";
+      case FoodType.cashew:
+        return "assets/icons/nuts/cashew.png";
+      case FoodType.walnut:
+        return "assets/icons/nuts/nut.png";
+      case FoodType.almond:
+        return "assets/icons/nuts/almond.png";
+      case FoodType.chestnut:
+        return "assets/icons/nuts/chestnut.png";
+      case FoodType.macadamia:
+        return "assets/icons/nuts/macadamia.png";
+      case FoodType.peanut:
+        return "assets/icons/nuts/peanuts.png";
+      case FoodType.soybean:
+        return "assets/icons/nuts/healthy.png";
+      case FoodType.lotusSeed:
+        return "assets/icons/nuts/lotus.png";
+      case FoodType.pistachio:
+        return "assets/icons/nuts/pistachio.png";
+      case FoodType.cacao:
+        return "assets/icons/nuts/cacao.png";
+
+      // ----- Ngũ cốc -----
+      case FoodType.rice:
+        return "assets/icons/grains/rice.png";
+      case FoodType.blackBean:
+        return "assets/icons/grains/beans.png";
+      case FoodType.redBean:
+        return "assets/icons/grains/red-beans.png";
+      case FoodType.oat:
+        return "assets/icons/grains/cereal.png";
+      case FoodType.millet:
+        return "assets/icons/grains/millet.png";
+      case FoodType.barley:
+        return "assets/icons/grains/bag.png";
+      case FoodType.brownRice:
+        return "assets/icons/grains/brown-rice.png";
+      case FoodType.cornHat:
+        return "assets/icons/grains/cornHat.png";
 
       // ----- Default -----
       case FoodType.unknown:
