@@ -113,53 +113,80 @@ class FoodDetailScreen extends StatelessWidget {
                   // Vị trí
                   Row(
                     children: [
-                      const Text(
+                      Text(
                         "Vị trí",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      DropdownButton<String>(
-                        value: food.location,
-                        items: ["Tủ lạnh", "Tủ đông", "Nhà bếp"]
-                            .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)),
-                            )
-                            .toList(),
-                        onChanged: (value) =>
-                            provider.updateLocation(value ?? "Tủ lạnh"),
+                      Spacer(),
+                      SizedBox(
+                        width: 150,
+                        child: DropdownButtonFormField<String>(
+                          value: food.location,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 5,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey.shade400,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          items: ["Tủ lạnh", "Tủ đông", "Nhà bếp"]
+                              .map(
+                                (e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(
+                                    e,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) =>
+                              provider.updateLocation(value ?? "Tủ lạnh"),
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
 
-                  // Vị trí con
-                  Row(
-                    children: [
-                      const Text(
-                        "Vị trí con",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      DropdownButton<String>(
-                        value: food.subLocation,
-                        items: ["Không xác định", "Ngăn trên", "Ngăn dưới"]
-                            .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)),
-                            )
-                            .toList(),
-                        onChanged: (value) => provider.updateSubLocation(
-                          value ?? "Không xác định",
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 10),
+
+                  // // Vị trí con
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       "Vị trí con",
+                  //       style: TextStyle(
+                  //         fontSize: 16,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 16),
+                  //     DropdownButton<String>(
+                  //       value: food.subLocation,
+                  //       items: ["Không xác định", "Ngăn trên", "Ngăn dưới"]
+                  //           .map(
+                  //             (e) => DropdownMenuItem(value: e, child: Text(e)),
+                  //           )
+                  //           .toList(),
+                  //       onChanged: (value) => provider.updateSubLocation(
+                  //         value ?? "Không xác định",
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 20),
 
                   // Số lượng
                   Row(
@@ -171,7 +198,7 @@ class FoodDetailScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Spacer(),
+                      Spacer(),
                       IconButton(
                         icon: const Icon(
                           Icons.remove_circle,
@@ -183,6 +210,7 @@ class FoodDetailScreen extends StatelessWidget {
                           }
                         },
                       ),
+                      SizedBox(width: 8),
                       Text(
                         food.quantity.toString(),
                         style: const TextStyle(
@@ -190,6 +218,8 @@ class FoodDetailScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      SizedBox(width: 8),
+
                       IconButton(
                         icon: const Icon(Icons.add_circle, color: Colors.blue),
                         onPressed: () =>
@@ -202,8 +232,8 @@ class FoodDetailScreen extends StatelessWidget {
                   // Ngày đăng ký
                   Row(
                     children: [
-                      const Text(
-                        "Ngày đăng kí",
+                      Text(
+                        "Ngày mua",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -211,13 +241,30 @@ class FoodDetailScreen extends StatelessWidget {
                       ),
                       const Spacer(),
                       TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey[200],
+                          padding: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          side: BorderSide(color: Colors.black, width: 1),
+                        ),
                         onPressed: () => _pickDate(context, true),
                         child: Text(
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                           "${food.registerDate.day}/${food.registerDate.month}/${food.registerDate.year}",
                         ),
                       ),
                     ],
                   ),
+
+                  SizedBox(height: 10),
 
                   // Ngày hết hạn
                   Row(
@@ -231,18 +278,35 @@ class FoodDetailScreen extends StatelessWidget {
                       ),
                       const Spacer(),
                       TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey[200],
+                          side: BorderSide(color: Colors.black, width: 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                         onPressed: () => _pickDate(context, false),
                         child: Text(
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                           "${food.expiryDate.day}/${food.expiryDate.month}/${food.expiryDate.year}",
                         ),
                       ),
-                      TextButton(
-                        onPressed: () => provider.updateExpiryDate(
-                          DateTime.now().add(const Duration(days: 7)),
-                        ),
-                        child: const Text("Thiết lập lại"),
-                      ),
                     ],
+                  ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: TextButton(
+                      onPressed: () => provider.updateExpiryDate(
+                        DateTime.now().add(const Duration(days: 7)),
+                      ),
+                      child: Text(
+                        "Thiết lập lại",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
 

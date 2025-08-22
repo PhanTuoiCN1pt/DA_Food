@@ -303,7 +303,7 @@ class FoodIconHelper {
         return FoodType.ketchup;
       case "nước mắm":
         return FoodType.fishSauce;
-      case "sốt mayonnaise":
+      case "mayonnaise":
         return FoodType.mayonnaise;
       case "mù tạt":
         return FoodType.mustard;
@@ -906,7 +906,7 @@ class FoodIconHelper {
       // ----- Default -----
       case FoodType.unknown:
       default:
-        return "icons/category/food.png";
+        return "assets/icons/category/food.png";
     }
   }
 

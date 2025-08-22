@@ -94,14 +94,16 @@ class CategoryScreen extends StatelessWidget {
               },
             ),
 
+            Divider(height: 30),
+
             // Grid danh mục con
             if (selectedCategory != null &&
                 subCategories.containsKey(selectedCategory)) ...[
-              const Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
                 child: Text(
-                  "Danh mục con",
-                  style: TextStyle(
+                  selectedCategory.toString(),
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
@@ -111,13 +113,34 @@ class CategoryScreen extends StatelessWidget {
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10,
+                ).copyWith(bottom: 50),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
                   childAspectRatio: 0.75,
                 ),
-                itemCount: subCategories[selectedCategory]!.length,
+                itemCount: subCategories[selectedCategory]!.length + 1,
                 itemBuilder: (context, index) {
+                  if (index == subCategories[selectedCategory]!.length) {
+                    // Ô cuối cùng = thêm food mới
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        // 👉 xử lý thêm food mới
+                        print("Thêm food mới trong $selectedCategory");
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(
+                          child: Icon(Icons.add, size: 32, color: Colors.grey),
+                        ),
+                      ),
+                    );
+                  }
                   final subItem = subCategories[selectedCategory]![index];
                   return Material(
                     color: Colors.transparent, // giữ trong suốt
@@ -128,7 +151,7 @@ class CategoryScreen extends StatelessWidget {
                           context,
                           PageRouteBuilder(
                             transitionDuration: const Duration(
-                              milliseconds: 700,
+                              milliseconds: 650,
                             ),
                             pageBuilder: (_, animation, __) => FoodDetailScreen(
                               category: selectedCategory,
@@ -154,9 +177,7 @@ class CategoryScreen extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(top: 10),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [

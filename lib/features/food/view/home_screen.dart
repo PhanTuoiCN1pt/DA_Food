@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:da_food/features/category/view/food_edit_screen.dart';
 import 'package:da_food/features/food/view/widget/rounded_underline_indicator.dart';
 import 'package:da_food/helper/color_helper.dart';
@@ -221,7 +222,7 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                       child: Wrap(
                                         spacing: 12,
-                                        runSpacing: 12,
+                                        runSpacing: 20,
                                         children: entry.value.map((food) {
                                           final daysLeft = food.expiryDate
                                               .difference(DateTime.now())
@@ -240,47 +241,117 @@ class HomeScreen extends StatelessWidget {
                                                 ),
                                               );
                                             },
+                                            // Ô thực phẩm
                                             child: Container(
-                                              width: 90,
+                                              width: 87,
                                               decoration: BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(
+                                                          0.2,
+                                                        ), // Màu của bóng
+                                                    spreadRadius:
+                                                        1, // Độ lan rộng
+                                                    blurRadius:
+                                                        1, // Độ mờ (càng lớn càng mờ)
+                                                    offset: Offset(
+                                                      0,
+                                                      1,
+                                                    ), // Độ dịch chuyển của bóng (x, y)
+                                                  ),
+                                                ],
                                                 color: Colors.white,
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                               ),
                                               child: Column(
                                                 children: [
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.topLeft,
-                                                    child: Container(
-                                                      margin:
-                                                          const EdgeInsets.all(
-                                                            4,
+                                                  Row(
+                                                    children: [
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.topLeft,
+                                                        // Ngày hết hạn
+                                                        child: Container(
+                                                          margin:
+                                                              const EdgeInsets.all(
+                                                                4,
+                                                              ),
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 6,
+                                                                vertical: 2,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  6,
+                                                                ),
                                                           ),
-                                                      padding:
-                                                          const EdgeInsets.symmetric(
-                                                            horizontal: 6,
-                                                            vertical: 2,
-                                                          ),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              6,
+                                                          child: Transform.translate(
+                                                            offset: Offset(
+                                                              -15,
+                                                              -10,
                                                             ),
-                                                      ),
-                                                      child: Text(
-                                                        "D-$daysLeft",
-                                                        style: const TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.black54,
+                                                            child: Container(
+                                                              padding:
+                                                                  EdgeInsets.only(
+                                                                    right: 4,
+                                                                    left: 4,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                color: TColors
+                                                                    .grey,
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      6,
+                                                                    ),
+                                                                border: Border.all(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade400,
+                                                                ),
+                                                              ),
+                                                              child: Text(
+                                                                "D-$daysLeft",
+                                                                style: const TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
+                                                      Container(
+                                                        width:
+                                                            30, // cố định bề ngang
+                                                        alignment: Alignment
+                                                            .centerRight, // đẩy chữ sang phải
+                                                        child: Text(
+                                                          "x${food.quantity}",
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-
+                                                  // Icon thực phẩm
                                                   Transform.translate(
                                                     offset: Offset(0, -8),
                                                     child: Image.asset(
@@ -292,10 +363,22 @@ class HomeScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                   const SizedBox(height: 4),
+
+                                                  // Tên thực phẩm
                                                   Container(
                                                     width: double.maxFinite,
+                                                    height: 45,
                                                     decoration: BoxDecoration(
-                                                      color: Colors.grey,
+                                                      color: TColors.grey,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black
+                                                              .withOpacity(0.2),
+                                                          spreadRadius: 1,
+                                                          blurRadius: 1,
+                                                          offset: Offset(0, 1),
+                                                        ),
+                                                      ],
                                                       borderRadius:
                                                           const BorderRadius.only(
                                                             bottomRight:
@@ -313,16 +396,29 @@ class HomeScreen extends StatelessWidget {
                                                           const EdgeInsets.all(
                                                             4.0,
                                                           ),
-                                                      child: Text(
-                                                        food.name,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                      child: Center(
+                                                        child: AutoSizeText(
+                                                          food.name,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          maxLines:
+                                                              2, // cho phép xuống tối đa 2 dòng
+                                                          minFontSize:
+                                                              8, // cỡ chữ nhỏ nhất khi thu gọn
+                                                          maxFontSize:
+                                                              16, // cỡ chữ lớn nhất
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          wrapWords: true,
+                                                          style:
+                                                              const TextStyle(
+                                                                color: Colors
+                                                                    .black87,
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
                                                         ),
                                                       ),
                                                     ),

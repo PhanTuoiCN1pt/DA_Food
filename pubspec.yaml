@@ -19,6 +19,7 @@ dependencies:
   page_transition: ^2.0.9
   font_awesome_flutter: ^10.10.0
   uuid: ^4.5.1
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

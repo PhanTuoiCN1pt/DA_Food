@@ -193,7 +193,7 @@ final Map<String, List<Map<String, dynamic>>> subCategories = {
     {"icon": "assets/icons/sauce/hot-sauce.png", "label": "Tương ớt"},
     {"icon": "assets/icons/sauce/ketchup.png", "label": "Tương cà"},
     {"icon": "assets/icons/sauce/sauce12.png", "label": "Nước mắm"},
-    {"icon": "assets/icons/sauce/mayonnaise.png", "label": "Sốt mayonnaise"},
+    {"icon": "assets/icons/sauce/mayonnaise.png", "label": "Mayonnaise"},
     {"icon": "assets/icons/sauce/mustard.png", "label": "Mù tạt"},
     {"icon": "assets/icons/sauce/wasabi.png", "label": "Wasabi"},
     {"icon": "assets/icons/sauce/soy-sauce.png", "label": "Xì dầu"},
