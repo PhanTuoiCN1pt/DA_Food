@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../helper/food_icon_helper.dart';
+import '../../food/view_model/food_api.dart';
 import '../../food/view_model/food_provider.dart';
 import '../../food/view_model/foods_provider.dart';
 
@@ -40,7 +41,7 @@ class FoodDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<FoodProvider>(context, listen: false);
-    provider.initFood(category, subCategory);
+    provider.initFood(category: category, name: subCategory);
 
     return Scaffold(
       appBar: AppBar(
@@ -337,7 +338,7 @@ class FoodDetailScreen extends StatelessWidget {
                         ),
                         backgroundColor: Colors.blueAccent,
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         final foodProvider = Provider.of<FoodProvider>(
                           context,
                           listen: false,
@@ -347,14 +348,26 @@ class FoodDetailScreen extends StatelessWidget {
                           listen: false,
                         );
 
-                        foodsProvider.addFood(
-                          foodProvider.food,
-                        ); // thêm món ăn mới
+                        final food = foodProvider.food;
 
-                        Navigator.pop(
-                          context,
-                        ); // quay về HomeScreen                        debugPrint("Lưu: ${food.name}, ${food.quantity}");
+                        // ✅ gọi API để lưu vào backend
+                        final success = await FoodApi.addFood(food);
+
+                        if (success) {
+                          foodsProvider.addFoodLocal(
+                            food,
+                          ); // thêm vào local list
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Đã thêm vào server")),
+                          );
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Lỗi khi thêm food")),
+                          );
+                        }
                       },
+
                       child: const Text(
                         "THÊM VÀO",
                         style: TextStyle(fontSize: 18, color: Colors.white),

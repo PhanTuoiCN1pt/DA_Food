@@ -282,9 +282,5 @@ final Map<String, List<Map<String, dynamic>>> subCategories = {
     {"icon": "assets/icons/grains/bag.png", "label": "Lúa mạch"},
     {"icon": "assets/icons/grains/brown-rice.png", "label": "Gạo lứt"},
     {"icon": "assets/icons/grains/cornHat.png", "label": "Hạt ngô"},
-    // {"icon": "png", "label": "Pancake"},
-    // {"icon": "png", "label": "Pancake"},
-    // {"icon": "png", "label": "Pancake"},
   ],
-  // thêm các category khác tương tự...
 };
