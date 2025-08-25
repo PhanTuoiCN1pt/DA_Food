@@ -275,6 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       return GestureDetector(
                         onTap: () {
+                          print('${food.id}');
                           Navigator.push(
                             context,
                             MaterialPageRoute(

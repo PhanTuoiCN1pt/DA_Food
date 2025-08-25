@@ -1,52 +1,48 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/services/food_server.dart';
 import '../model/food_model.dart';
+import 'foods_provider.dart';
 
 class FoodProvider with ChangeNotifier {
   FoodItem? _food;
+  bool _isNew = true;
 
-  // Controllers cho text input
+  // Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
   FoodItem get food => _food!;
+  bool get isNew => _isNew;
 
-  /// Khởi tạo food mới (chỉ khi chưa có)
   void initFood({required String category, required String name}) {
-    if (_food == null) {
-      _food = FoodItem(
-        id: DateTime.now().millisecondsSinceEpoch
-            .toString(), // tự tạo id theo giờ
-        category: category,
-        name: name,
-        quantity: 1,
-        location: "Tủ lạnh",
-        subLocation: "Không xác định",
-        registerDate: DateTime.now(),
-        expiryDate: DateTime.now().add(const Duration(days: 7)),
-        note: "",
-      );
-    } else {
-      // Nếu đã có rồi thì chỉ cập nhật lại category + name thôi
-      _food!.category = category;
-      _food!.name = name;
-    }
+    _isNew = true;
+    _food = FoodItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      category: category,
+      name: name,
+      quantity: 1,
+      location: "Tủ lạnh",
+      subLocation: "Không xác định",
+      registerDate: DateTime.now(),
+      expiryDate: DateTime.now().add(const Duration(days: 7)),
+      note: "",
+    );
 
-    // đồng bộ controller
     nameController.text = _food!.name;
     noteController.text = _food!.note;
     notifyListeners();
   }
 
-  /// Khởi tạo từ một item có sẵn (edit)
   void initFoodFromItem(FoodItem item) {
     _food = item;
+    _isNew = false;
     nameController.text = item.name;
     noteController.text = item.note;
     notifyListeners();
   }
 
-  // ================== Update field ==================
+  // ============= Update field =============
   void updateName(String name) {
     _food?.name = name;
     notifyListeners();
@@ -82,10 +78,29 @@ class FoodProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // ================== Convert ==================
+  // ============= Save to backend =============
+  Future<void> saveFood(FoodsProvider foodsProvider) async {
+    if (_food == null) return;
+
+    try {
+      if (_food!.id.isEmpty) {
+        // Chưa có id => thêm mới
+        final newFood = await FoodService.addFood(_food!);
+        _food = newFood;
+        foodsProvider.addFood(newFood);
+      } else {
+        // Có id => update
+        final updated = await FoodService.updateFood(_food!);
+        _food = updated;
+        foodsProvider.updateFood(updated);
+      }
+    } catch (e) {
+      debugPrint("❌ saveFood error: $e");
+    }
+  }
+
   Map<String, dynamic> toJson() => _food?.toJson() ?? {};
 
-  // cleanup khi không dùng nữa
   @override
   void dispose() {
     nameController.dispose();

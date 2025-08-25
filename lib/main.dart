@@ -1,6 +1,7 @@
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:da_food/features/food/view_model/food_provider.dart';
 import 'package:da_food/features/food/view_model/foods_provider.dart';
+import 'package:da_food/features/user/view/auth_screen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'features/category/view/category_screen.dart';
 import 'features/food/view/home_screen.dart';
 import 'features/food/view_model/tab_provider.dart';
+import 'features/user/view/widget/constants.dart';
 
 void main() {
   runApp(
@@ -29,10 +31,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white38,
+          border: InputBorder.none,
+          hintStyle: TextStyle(color: Colors.white),
+          contentPadding: EdgeInsets.symmetric(
+            vertical: defpaultPadding * 1.2,
+            horizontal: defpaultPadding,
+          ),
+        ),
+      ),
+      home: AuthScreen(),
       routes: {
         '/category': (context) => CategoryScreen(),
         '/home': (context) => HomeScreen(),
+        '/auth': (context) => AuthScreen(),
       },
     );
   }

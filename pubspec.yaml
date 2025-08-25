@@ -21,6 +21,7 @@ dependencies:
   uuid: ^4.5.1
   auto_size_text: ^3.0.0
   http: ^1.5.0
+  flutter_svg: ^2.2.0
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +47,7 @@ flutter:
     - assets/icons/desserts/
     - assets/icons/nuts/
     - assets/icons/grains/
+    - assets/icons/logo/
 
 
   uses-material-design: true

@@ -162,33 +162,6 @@ class FoodDetailScreen extends StatelessWidget {
 
                   SizedBox(height: 10),
 
-                  // // Vị trí con
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     Text(
-                  //       "Vị trí con",
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //     SizedBox(width: 16),
-                  //     DropdownButton<String>(
-                  //       value: food.subLocation,
-                  //       items: ["Không xác định", "Ngăn trên", "Ngăn dưới"]
-                  //           .map(
-                  //             (e) => DropdownMenuItem(value: e, child: Text(e)),
-                  //           )
-                  //           .toList(),
-                  //       onChanged: (value) => provider.updateSubLocation(
-                  //         value ?? "Không xác định",
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // const SizedBox(height: 20),
-
                   // Số lượng
                   Row(
                     children: [

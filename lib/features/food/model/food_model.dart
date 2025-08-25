@@ -33,10 +33,7 @@ class FoodItem {
   factory FoodItem.fromJson(Map<String, dynamic> json) {
     return FoodItem(
       // id: json['_id'] ?? json['id'] ?? _uuid.v4(),
-      id:
-          json['_id'] ??
-          json['id'] ??
-          DateTime.now().millisecondsSinceEpoch.toString(),
+      id: json['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
       category: json['category'] ?? '',
       name: json['name'] ?? '',
       quantity: json['quantity'] ?? 1,
