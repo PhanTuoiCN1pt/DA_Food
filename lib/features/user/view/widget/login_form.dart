@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class LoginForm extends StatelessWidget {
-  const LoginForm({super.key});
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+
+  const LoginForm({
+    super.key,
+    required this.emailController,
+    required this.passwordController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -9,37 +16,27 @@ class LoginForm extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         horizontal: MediaQuery.of(context).size.width * 0.13,
       ),
-      child: Form(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Spacer(),
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: "Email",
-                hintStyle: TextStyle(color: Colors.white),
-              ),
+      child: Column(
+        children: [
+          Spacer(),
+          TextField(
+            controller: emailController,
+            decoration: InputDecoration(
+              hintText: "Email",
+              hintStyle: TextStyle(color: Colors.white),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  hintStyle: TextStyle(color: Colors.white),
-                ),
-              ),
+          ),
+          SizedBox(height: 10),
+          TextField(
+            controller: passwordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              hintText: "Password",
+              hintStyle: TextStyle(color: Colors.white),
             ),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                "Quen mat khau",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            Spacer(flex: 2),
-          ],
-        ),
+          ),
+          Spacer(flex: 2),
+        ],
       ),
     );
   }
