@@ -6,8 +6,9 @@ import 'package:da_food/features/user/view/widget/signup_form.dart';
 import 'package:da_food/features/user/view/widget/social_btn.dart';
 import 'package:da_food/helper/color_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
+import '../view_model/login_controller.dart';
+import '../view_model/register_controller.dart';
 import 'loading_screen.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -24,9 +25,18 @@ class _AuthScreenState extends State<AuthScreen>
   late AnimationController _animationController;
   late Animation<double> _animationTextRotate;
 
+  final _formKey = GlobalKey<FormState>();
+  final _signupKey = GlobalKey<FormState>();
+
   // 👇 controller để lấy dữ liệu từ LoginForm
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  //Register
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController signupEmailController = TextEditingController();
+  final TextEditingController signupPasswordController =
+      TextEditingController();
 
   void setUpAnimation() {
     _animationController = AnimationController(
@@ -42,6 +52,8 @@ class _AuthScreenState extends State<AuthScreen>
   void updateView() {
     setState(() {
       _isShowSignUp = !_isShowSignUp;
+      // emailController.dispose();
+      // passwordController.dispose();
     });
     _isShowSignUp
         ? _animationController.forward()
@@ -59,41 +71,10 @@ class _AuthScreenState extends State<AuthScreen>
     _animationController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    nameController.dispose();
+    signupEmailController.dispose();
+    signupPasswordController.dispose();
     super.dispose();
-  }
-
-  // 👇 Hàm gọi API login
-  Future<void> _login() async {
-    try {
-      final response = await http.post(
-        Uri.parse("http://192.168.0.105:5000/api/users/login"),
-        body: {
-          "email": emailController.text,
-          "password": passwordController.text,
-        },
-      );
-
-      print("STATUS CODE: ${response.statusCode}");
-      print("BODY: ${response.body}");
-
-      if (response.statusCode == 200) {
-        // ✅ Login thành công → chuyển sang LoadingScreen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const LoadingScreen()),
-        );
-      } else {
-        // ❌ Sai tài khoản
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sai email hoặc mật khẩu")),
-        );
-      }
-    } catch (e) {
-      // ❌ Lỗi kết nối
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Lỗi kết nối server: $e")));
-    }
   }
 
   @override
@@ -114,12 +95,15 @@ class _AuthScreenState extends State<AuthScreen>
                 child: GestureDetector(
                   onTap: () {
                     if (_isShowSignUp) updateView();
+                    emailController.clear();
+                    passwordController.clear();
                   },
                   child: Container(
                     color: TColors.colorApp,
                     child: LoginForm(
                       emailController: emailController,
                       passwordController: passwordController,
+                      formKey: _formKey,
                     ),
                   ),
                 ),
@@ -134,8 +118,22 @@ class _AuthScreenState extends State<AuthScreen>
                 child: GestureDetector(
                   onTap: () {
                     if (!_isShowSignUp) updateView();
+                    nameController.clear();
+                    signupEmailController.clear();
+                    signupPasswordController.clear();
                   },
-                  child: Container(color: Colors.red, child: SignUpForm()),
+                  child: Container(
+                    color: Colors.brown,
+                    child: SignUpForm(
+                      nameController: nameController,
+                      emailController: signupEmailController,
+                      passwordController: signupPasswordController,
+                      signUpFormKey: _signupKey,
+
+                      // confirmController:
+                      //     TextEditingController(), // nếu bạn muốn confirm password
+                    ),
+                  ),
                 ),
               ),
 
@@ -163,7 +161,6 @@ class _AuthScreenState extends State<AuthScreen>
               ),
 
               // Login Text
-              // Login Text
               AnimatedPositioned(
                 duration: defaultDuration,
                 bottom: _isShowSignUp
@@ -182,17 +179,31 @@ class _AuthScreenState extends State<AuthScreen>
                     angle: -_animationTextRotate.value * pi / 180,
                     alignment: Alignment.topLeft,
                     child: GestureDetector(
-                      onTap: _login, // 👈 gọi API khi bấm
+                      // Login button
+                      onTap: () {
+                        if (_formKey.currentState!.validate()) {
+                          LoginController.login(
+                            context: context,
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                            onSuccess: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoadingScreen(),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                      // 👈 gọi API khi bấm
                       child: Container(
                         alignment: Alignment.center,
                         padding: EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 20,
+                          vertical: defpaultPadding * 0.75,
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2), // nền mờ
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+
                         width: 160,
                         child: Text(
                           "Đăng nhập".toUpperCase(),
@@ -225,12 +236,32 @@ class _AuthScreenState extends State<AuthScreen>
                   child: Transform.rotate(
                     angle: (90 - _animationTextRotate.value) * pi / 180,
                     alignment: Alignment.topRight,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: defpaultPadding * 0.75,
+                    child: GestureDetector(
+                      // Register button
+                      onTap: () {
+                        if (_signupKey.currentState!.validate()) {
+                          RegisterController.register(
+                            context: context,
+                            name: nameController.text.trim(),
+                            email: signupEmailController.text.trim(),
+                            password: signupPasswordController.text.trim(),
+                            onSuccess: () {
+                              setState(() {
+                                _isShowSignUp = false;
+                                _animationController.reverse();
+                              });
+                            },
+                          );
+                        }
+                      },
+
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: defpaultPadding * 0.75,
+                        ),
+                        width: 160,
+                        child: Text("Đăng ký".toUpperCase()),
                       ),
-                      width: 160,
-                      child: Text("Đăng ký".toUpperCase()),
                     ),
                   ),
                 ),
