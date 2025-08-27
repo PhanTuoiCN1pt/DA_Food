@@ -19,19 +19,23 @@ class SignUpForm extends StatelessWidget {
     final inputDecoration = InputDecoration(
       filled: true,
       fillColor: Colors.white.withOpacity(0.1),
-      labelStyle: const TextStyle(color: Colors.white70),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+      labelStyle: const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
       prefixIconColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.white30),
+        borderSide: const BorderSide(color: Colors.white),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.white30),
+        borderSide: const BorderSide(color: Colors.white),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.blueAccent, width: 1.5),
+        borderSide: const BorderSide(color: Colors.white, width: 1.5),
       ),
       errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 13),
     );
@@ -40,11 +44,13 @@ class SignUpForm extends StatelessWidget {
       key: signUpFormKey,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.13,
+          horizontal: MediaQuery.of(context).size.width * 0.12,
         ),
         child: Column(
           children: [
             const Spacer(),
+
+            SizedBox(height: 40),
 
             /// Name
             TextFormField(
@@ -61,7 +67,7 @@ class SignUpForm extends StatelessWidget {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 25),
 
             /// Email
             TextFormField(
@@ -81,7 +87,7 @@ class SignUpForm extends StatelessWidget {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 25),
 
             /// Password
             TextFormField(

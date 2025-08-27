@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/services/food_server.dart';
 import '../model/food_model.dart';
-import 'foods_provider.dart';
 
 class FoodProvider with ChangeNotifier {
   FoodItem? _food;
@@ -15,10 +14,18 @@ class FoodProvider with ChangeNotifier {
   FoodItem get food => _food!;
   bool get isNew => _isNew;
 
-  void initFood({required String category, required String name}) {
+  Future<void> initFood({
+    required String category,
+    required String name,
+  }) async {
     _isNew = true;
+
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId') ?? '';
+
     _food = FoodItem(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
+      userId: userId,
       category: category,
       name: name,
       quantity: 1,
@@ -76,27 +83,6 @@ class FoodProvider with ChangeNotifier {
   void updateNote(String note) {
     _food?.note = note;
     notifyListeners();
-  }
-
-  // ============= Save to backend =============
-  Future<void> saveFood(FoodsProvider foodsProvider) async {
-    if (_food == null) return;
-
-    try {
-      if (_food!.id.isEmpty) {
-        // Chưa có id => thêm mới
-        final newFood = await FoodService.addFood(_food!);
-        _food = newFood;
-        foodsProvider.addFood(newFood);
-      } else {
-        // Có id => update
-        final updated = await FoodService.updateFood(_food!);
-        _food = updated;
-        foodsProvider.updateFood(updated);
-      }
-    } catch (e) {
-      debugPrint("❌ saveFood error: $e");
-    }
   }
 
   Map<String, dynamic> toJson() => _food?.toJson() ?? {};

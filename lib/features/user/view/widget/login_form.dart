@@ -17,13 +17,15 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.13,
+        horizontal: MediaQuery.of(context).size.width * 0.12,
       ),
       child: Form(
         key: formKey,
         child: Column(
           children: [
-            const Spacer(),
+            const Spacer(flex: 1),
+
+            SizedBox(height: 40),
 
             /// Email
             TextFormField(
@@ -39,6 +41,10 @@ class LoginForm extends StatelessWidget {
               },
               decoration: InputDecoration(
                 labelText: "Email",
+                labelStyle: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
                 prefixIcon: const Icon(Iconsax.direct),
                 filled: true,
                 fillColor: Colors.grey.shade100,
@@ -48,16 +54,16 @@ class LoginForm extends StatelessWidget {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+                  borderSide: BorderSide(color: Colors.black),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+                  borderSide: const BorderSide(color: Colors.black, width: 1.5),
                 ),
                 errorStyle: const TextStyle(color: Colors.red, fontSize: 13),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 25),
 
             /// Password
             TextFormField(
@@ -74,6 +80,10 @@ class LoginForm extends StatelessWidget {
               },
               decoration: InputDecoration(
                 labelText: "Password",
+                labelStyle: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
                 prefixIcon: const Icon(Iconsax.lock),
                 filled: true,
                 fillColor: Colors.grey.shade100,
@@ -83,11 +93,11 @@ class LoginForm extends StatelessWidget {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+                  borderSide: BorderSide(color: Colors.black),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+                  borderSide: const BorderSide(color: Colors.black, width: 1.5),
                 ),
                 errorStyle: const TextStyle(color: Colors.red, fontSize: 13),
               ),

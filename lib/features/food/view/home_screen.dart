@@ -2,13 +2,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:da_food/features/category/view/food_edit_screen.dart';
 import 'package:da_food/features/food/view/widget/rounded_underline_indicator.dart';
 import 'package:da_food/helper/color_helper.dart';
+import 'package:da_food/helper/divider_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
+import '../../../core/services/food_server.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../model/food_model.dart';
-import '../view_model/foods_provider.dart';
 import '../view_model/tab_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,18 +26,32 @@ class _HomeScreenState extends State<HomeScreen> {
     Icons.kitchen,
   ];
 
+  // final prefs = SharedPreferences.getInstance();
+  // late final userId = prefs.getString('userId');
+
+  bool isLoading = true;
+  List<FoodItem> foods = [];
+
+  Future<void> _loadFoods() async {
+    setState(() => isLoading = true);
+    try {
+      foods = await FoodService.fetchFoods(); // tự động lọc theo userId
+    } catch (e) {
+      print("Error loading foods: $e");
+      foods = [];
+    }
+    setState(() => isLoading = false);
+  }
+
   @override
   void initState() {
     super.initState();
-    // Load foods lần đầu
-    Future.microtask(
-      () => Provider.of<FoodsProvider>(context, listen: false).fetchFoods(),
-    );
+    _loadFoods();
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabProvider = Provider.of<TabProvider>(context);
+    final tabProvider = TabProvider(); // dùng trực tiếp, không cần Provider
 
     return DefaultTabController(
       length: labels.length,
@@ -45,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Builder(
         builder: (context) {
           final tabController = DefaultTabController.of(context);
-
           tabController.animation?.addListener(() {
             final newIndex = tabController.animation!.value.round();
             if (tabProvider.currentIndex != newIndex) {
@@ -59,10 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Column(
                   children: [
-                    /// Header
                     _buildHeader(tabProvider),
-
-                    /// Body
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
@@ -72,47 +82,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             topRight: Radius.circular(24),
                           ),
                         ),
-                        child: Consumer<FoodsProvider>(
-                          builder: (context, foodsProvider, child) {
-                            if (foodsProvider.isLoading) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-
-                            final foods = foodsProvider.foods;
-                            if (foods.isEmpty) {
-                              return const Center(
-                                child: Text("Chưa có thực phẩm nào"),
-                              );
-                            }
-
-                            return _buildTabBarView(foods);
-                          },
-                        ),
+                        child: isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : foods.isEmpty
+                            ? const Center(child: Text("Chưa có thực phẩm nào"))
+                            : _buildTabBarView(foods),
                       ),
                     ),
                   ],
                 ),
-
-                /// Overlay loading (mờ cả màn hình)
-                Consumer<FoodsProvider>(
-                  builder: (context, foodsProvider, child) {
-                    if (!foodsProvider.isLoading) {
-                      return const SizedBox.shrink();
-                    }
-                    return Container(
-                      color: Colors.black.withOpacity(0.2),
-                      child: const Center(
-                        child: CircularProgressIndicator(color: Colors.white),
-                      ),
-                    );
-                  },
-                ),
+                if (isLoading)
+                  Container(
+                    color: Colors.black.withOpacity(0.2),
+                    child: const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    ),
+                  ),
               ],
             ),
-
-            /// Floating button
             floatingActionButton: Container(
               width: 60,
               height: 60,
@@ -128,11 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: const Icon(Icons.add, color: Colors.white, size: 28),
                 onPressed: () {
                   Navigator.pushNamed(context, '/category').then((_) {
-                    // 👉 Reload khi pop về
-                    Provider.of<FoodsProvider>(
-                      context,
-                      listen: false,
-                    ).fetchFoods();
+                    _loadFoods(); // reload sau khi pop
                   });
                 },
               ),
@@ -143,11 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Header với TabBar
   Widget _buildHeader(TabProvider tabProvider) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(top: 50, left: 16, right: 16),
+      padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.blue, Colors.purple],
@@ -157,16 +139,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Column(
         children: [
-          /// Title + actions
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Food AI",
+                "Food AI x PhanTuoi",
                 style: GoogleFonts.oswald(
                   textStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 30,
+                    fontSize: 25,
                     color: Colors.white,
                   ),
                 ),
@@ -182,42 +163,28 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-
-          /// TabBar
           TabBar(
             onTap: (index) => tabProvider.setTab(index),
             splashFactory: NoSplash.splashFactory,
             overlayColor: MaterialStateProperty.all(Colors.transparent),
-            labelPadding: const EdgeInsets.symmetric(
-              vertical: 12.0,
-              horizontal: 16.0,
-            ),
+            labelPadding: EdgeInsets.only(bottom: 0, top: 16),
             indicator: const RoundedUnderlineTabIndicator(
               borderSide: BorderSide(width: 2.5, color: Colors.white),
               radius: 6.0,
-              insets: EdgeInsets.symmetric(horizontal: 8.0),
+              insets: EdgeInsets.symmetric(horizontal: 8),
             ),
             indicatorSize: TabBarIndicatorSize.tab,
             dividerColor: Colors.transparent,
             tabs: List.generate(labels.length, (index) {
-              final isSelected = tabProvider.currentIndex == index;
-              return AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                child: isSelected
-                    ? Text(
-                        labels[index],
-                        key: ValueKey("text_$index"),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    : Icon(
-                        icons[index],
-                        key: ValueKey("icon_$index"),
-                        color: Colors.white,
-                      ),
+              return Tab(
+                child: Text(
+                  labels[index],
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               );
             }),
           ),
@@ -226,7 +193,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// TabBarView hiển thị danh sách
   Widget _buildTabBarView(List<FoodItem> foods) {
     return TabBarView(
       physics: const BouncingScrollPhysics(),
@@ -239,13 +205,13 @@ class _HomeScreenState extends State<HomeScreen> {
           return Center(child: Text("Chưa có thực phẩm trong $locationLabel"));
         }
 
-        // Nhóm theo category
         final Map<String, List<FoodItem>> groupedByCategory = {};
         for (var f in filteredFoods) {
           groupedByCategory.putIfAbsent(f.category, () => []).add(f);
         }
 
         return ListView(
+          padding: EdgeInsets.only(top: 10),
           children: groupedByCategory.entries.map((entry) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,18 +219,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
-                    vertical: 8,
+                    vertical: 10,
                   ),
-                  child: Text(
-                    "${entry.key} (${entry.value.length})",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+
+                  // Category
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${entry.key} (${entry.value.length})",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(child: DashedDivider()),
+                    ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 12),
                   child: Wrap(
                     spacing: 12,
                     runSpacing: 20,
@@ -272,22 +247,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       final daysLeft = food.expiryDate
                           .difference(DateTime.now())
                           .inDays;
-
                       return GestureDetector(
                         onTap: () {
-                          print('${food.id}');
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => FoodEditScreen(food: food),
                             ),
-                          ).then((_) {
-                            // reload khi back từ FoodEditScreen
-                            Provider.of<FoodsProvider>(
-                              context,
-                              listen: false,
-                            ).fetchFoods();
-                          });
+                          ).then((_) => _loadFoods());
                         },
                         child: _buildFoodItem(food, daysLeft),
                       );
@@ -302,10 +269,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Widget item thực phẩm
   Widget _buildFoodItem(FoodItem food, int daysLeft) {
     return Container(
-      width: 87,
+      width: 86,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -325,11 +291,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Container(
-                  margin: EdgeInsets.all(4),
+                  margin: const EdgeInsets.all(4),
                   child: Transform.translate(
-                    offset: Offset(-10, -10),
+                    offset: const Offset(-10, -10),
                     child: Container(
-                      padding: EdgeInsets.only(right: 4, left: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
                         color: TColors.grey,
                         borderRadius: BorderRadius.circular(6),
@@ -348,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Transform.translate(
-                offset: Offset(10, -1),
+                offset: const Offset(10, -1),
                 child: Container(
                   width: 30,
                   child: Align(
@@ -368,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 4),
           Transform.translate(
-            offset: Offset(0, -10),
+            offset: const Offset(0, -10),
             child: Image.asset(
               FoodIconHelper.getIconByName(food.name),
               width: 40,
@@ -387,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.all(6),
+              padding: const EdgeInsets.all(6),
               child: Center(
                 child: AutoSizeText(
                   food.name,

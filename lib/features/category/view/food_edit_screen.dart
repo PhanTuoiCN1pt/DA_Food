@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/services/food_server.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../../food/model/food_model.dart';
 import '../../food/view_model/food_provider.dart';
-import '../../food/view_model/foods_provider.dart';
 
 class FoodEditScreen extends StatelessWidget {
   final FoodItem food;
@@ -41,7 +41,10 @@ class FoodEditScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Consumer<FoodProvider>(
-          builder: (_, provider, __) => Text(provider.food.name),
+          builder: (_, provider, __) => Text(
+            provider.food.name,
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -60,28 +63,39 @@ class FoodEditScreen extends StatelessWidget {
                   // Icon + Category + Editable Name
                   Row(
                     children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Image.asset(
-                          FoodIconHelper.getIconByName(f.name),
+                      // Icon
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0, bottom: 18),
+                        child: Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Image.asset(
+                            FoodIconHelper.getIconByName(f.name),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+
+                      // Category + Name
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            f.category,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.blue,
+                          // Category
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: Text(
+                              f.category,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 4),
+
+                          // Edit Name
                           SizedBox(
                             width: 200,
                             child: TextField(
@@ -204,25 +218,28 @@ class FoodEditScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.grey[200],
-                          padding: EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 12,
+                      Container(
+                        width: 100,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.grey[200],
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            side: BorderSide(color: Colors.black, width: 1),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                          onPressed: () => _pickDate(context, true),
+                          child: Text(
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            "${food.registerDate.day}/${food.registerDate.month}/${food.registerDate.year}",
                           ),
-                          side: BorderSide(color: Colors.black, width: 1),
-                        ),
-                        onPressed: () => _pickDate(context, true),
-                        child: Text(
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          "${food.registerDate.day}/${food.registerDate.month}/${food.registerDate.year}",
                         ),
                       ),
                     ],
@@ -239,21 +256,24 @@ class FoodEditScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.grey[200],
-                          side: BorderSide(color: Colors.black, width: 1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      Container(
+                        width: 100,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.grey[200],
+                            side: BorderSide(color: Colors.black, width: 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                        ),
-                        onPressed: () => _pickDate(context, false),
-                        child: Text(
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                          onPressed: () => _pickDate(context, false),
+                          child: Text(
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            "${food.expiryDate.day}/${food.expiryDate.month}/${food.expiryDate.year}",
                           ),
-                          "${food.expiryDate.day}/${food.expiryDate.month}/${food.expiryDate.year}",
                         ),
                       ),
                     ],
@@ -273,10 +293,7 @@ class FoodEditScreen extends StatelessWidget {
                     maxLines: 3,
                     onChanged: provider.updateNote,
                   ),
-
-                  const SizedBox(height: 30),
-
-                  // Button Cập nhật
+                  SizedBox(height: 100),
                   // Button Cập nhật
                   SizedBox(
                     width: double.infinity,
@@ -286,22 +303,10 @@ class FoodEditScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.cyan,
                       ),
-                      onPressed: () async {
-                        final foodProvider = Provider.of<FoodProvider>(
-                          context,
-                          listen: false,
-                        );
-                        final foodsProvider = Provider.of<FoodsProvider>(
-                          context,
-                          listen: false,
-                        );
-
-                        // Gọi update (local hoặc API tuỳ implementation)
-                        await foodsProvider.updateFood(foodProvider.food);
-
-                        // Quay lại màn trước
+                      onPressed: () {
+                        FoodService.updateFood(food);
                         Navigator.pop(context);
                       },
                       child: const Text(

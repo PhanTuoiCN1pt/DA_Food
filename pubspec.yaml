@@ -24,7 +24,8 @@ dependencies:
   flutter_svg: ^2.2.0
   get: ^4.6.6
   iconsax: ^0.0.8
-
+  lottie: ^3.3.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -51,6 +52,7 @@ flutter:
     - assets/icons/nuts/
     - assets/icons/grains/
     - assets/icons/logo/
+    - assets/animations/
 
 
   uses-material-design: true

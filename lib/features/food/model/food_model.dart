@@ -2,6 +2,7 @@ import 'package:uuid/uuid.dart';
 
 class FoodItem {
   String id;
+  String userId; // thêm userId
   String category;
   String name;
   int quantity;
@@ -15,6 +16,7 @@ class FoodItem {
 
   FoodItem({
     String? id,
+    required this.userId, // bắt buộc khi tạo
     required this.category,
     required this.name,
     this.quantity = 1,
@@ -23,17 +25,14 @@ class FoodItem {
     DateTime? registerDate,
     DateTime? expiryDate,
     this.note = "",
-  }) : id =
-           id ??
-           DateTime.now().millisecondsSinceEpoch.toString(), // ✅ id theo giờ
-       // : id = id ?? _uuid.v4(), // ✅ tự sinh id nếu chưa có
+  }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString(),
        registerDate = registerDate ?? DateTime.now(),
        expiryDate = expiryDate ?? DateTime.now().add(const Duration(days: 7));
 
   factory FoodItem.fromJson(Map<String, dynamic> json) {
     return FoodItem(
-      // id: json['_id'] ?? json['id'] ?? _uuid.v4(),
       id: json['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      userId: json['userId'] ?? '', // đọc từ json
       category: json['category'] ?? '',
       name: json['name'] ?? '',
       quantity: json['quantity'] ?? 1,
@@ -50,7 +49,8 @@ class FoodItem {
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id, // ✅ luôn gửi kèm id
+      "id": id,
+      "userId": userId, // gửi kèm luôn
       "category": category,
       "name": name,
       "quantity": quantity,

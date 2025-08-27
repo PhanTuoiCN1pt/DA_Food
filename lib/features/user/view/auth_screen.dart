@@ -4,7 +4,6 @@ import 'package:da_food/features/user/view/widget/constants.dart';
 import 'package:da_food/features/user/view/widget/login_form.dart';
 import 'package:da_food/features/user/view/widget/signup_form.dart';
 import 'package:da_food/features/user/view/widget/social_btn.dart';
-import 'package:da_food/helper/color_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../view_model/login_controller.dart';
@@ -81,6 +80,8 @@ class _AuthScreenState extends State<AuthScreen>
   Widget build(BuildContext context) {
     final _size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset:
+          false, // 👈 ngăn layout bị đẩy khi bàn phím hiện lên
       body: AnimatedBuilder(
         animation: _animationController,
         builder: (context, _) {
@@ -99,7 +100,17 @@ class _AuthScreenState extends State<AuthScreen>
                     passwordController.clear();
                   },
                   child: Container(
-                    color: TColors.colorApp,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFFA8E6CF), // tím
+                          Color(0xFFFFF3E0), // xanh dương
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+
                     child: LoginForm(
                       emailController: emailController,
                       passwordController: passwordController,
@@ -123,7 +134,16 @@ class _AuthScreenState extends State<AuthScreen>
                     signupPasswordController.clear();
                   },
                   child: Container(
-                    color: Colors.brown,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFF1C1C1C), // tím
+                          Color(0xFFB87333), // xanh dương
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
                     child: SignUpForm(
                       nameController: nameController,
                       emailController: signupEmailController,
@@ -204,11 +224,11 @@ class _AuthScreenState extends State<AuthScreen>
                           vertical: defpaultPadding * 0.75,
                         ),
 
-                        width: 160,
+                        width: 180,
                         child: Text(
                           "Đăng nhập".toUpperCase(),
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -260,7 +280,10 @@ class _AuthScreenState extends State<AuthScreen>
                           vertical: defpaultPadding * 0.75,
                         ),
                         width: 160,
-                        child: Text("Đăng ký".toUpperCase()),
+                        child: Text(
+                          "Đăng ký".toUpperCase(),
+                          style: TextStyle(color: Color(0xFFEEEEEE)),
+                        ),
                       ),
                     ),
                   ),

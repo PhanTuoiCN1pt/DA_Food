@@ -14,7 +14,10 @@ class CategoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Thể loại"),
+        title: const Text(
+          "Thể loại",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
         actions: const [
           Icon(Icons.search),
           SizedBox(width: 8),
