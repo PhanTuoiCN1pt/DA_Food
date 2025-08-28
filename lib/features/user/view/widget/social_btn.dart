@@ -11,14 +11,6 @@ class SocialBtn extends StatelessWidget {
         IconButton(
           onPressed: () {},
           icon: Image.asset(
-            "assets/icons/logo/facebook-logo.png",
-            width: 30,
-            height: 30,
-          ),
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: Image.asset(
             "assets/icons/logo/google-symbol.png",
             width: 30,
             height: 30,
@@ -28,6 +20,14 @@ class SocialBtn extends StatelessWidget {
           onPressed: () {},
           icon: Image.asset(
             "assets/icons/logo/facebook-logo.png",
+            width: 30,
+            height: 30,
+          ),
+        ),
+        IconButton(
+          onPressed: () {},
+          icon: Image.asset(
+            "assets/icons/logo/twitter.png",
             width: 30,
             height: 30,
           ),

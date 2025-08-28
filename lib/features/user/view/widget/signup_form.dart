@@ -37,7 +37,7 @@ class SignUpForm extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Colors.white, width: 1.5),
       ),
-      errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 13),
+      errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 12),
     );
 
     return Form(
@@ -50,7 +50,7 @@ class SignUpForm extends StatelessWidget {
           children: [
             const Spacer(),
 
-            SizedBox(height: 40),
+            SizedBox(height: 95),
 
             /// Name
             TextFormField(

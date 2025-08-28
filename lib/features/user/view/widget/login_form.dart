@@ -22,10 +22,11 @@ class LoginForm extends StatelessWidget {
       child: Form(
         key: formKey,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const Spacer(flex: 1),
 
-            SizedBox(height: 40),
+            SizedBox(height: 70),
 
             /// Email
             TextFormField(
@@ -60,7 +61,7 @@ class LoginForm extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                   borderSide: const BorderSide(color: Colors.black, width: 1.5),
                 ),
-                errorStyle: const TextStyle(color: Colors.red, fontSize: 13),
+                errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
               ),
             ),
             const SizedBox(height: 25),
@@ -79,7 +80,7 @@ class LoginForm extends StatelessWidget {
                 return null;
               },
               decoration: InputDecoration(
-                labelText: "Password",
+                labelText: "Mật khẩu",
                 labelStyle: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -103,6 +104,7 @@ class LoginForm extends StatelessWidget {
               ),
             ),
 
+            TextButton(onPressed: () {}, child: Text("Quên mật khẩu")),
             const Spacer(flex: 2),
           ],
         ),

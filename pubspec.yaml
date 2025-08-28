@@ -52,8 +52,12 @@ flutter:
     - assets/icons/nuts/
     - assets/icons/grains/
     - assets/icons/logo/
-    - assets/animations/
-
+    - assets/animations/login.json
+    - assets/animations/order-complete-car-delivery-animation.json
+    - assets/animations/register.json
+    - assets/animations/Green Login.json
+    - assets/animations/Jurupoles - Login.json
+    - assets/animations/j28uCA3Jg9.json
 
   uses-material-design: true
 
