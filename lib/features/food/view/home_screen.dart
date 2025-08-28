@@ -163,6 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
+          SizedBox(height: 10),
           TabBar(
             onTap: (index) => tabProvider.setTab(index),
             splashFactory: NoSplash.splashFactory,
@@ -180,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   labels[index],
                   style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),

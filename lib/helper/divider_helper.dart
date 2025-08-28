@@ -8,7 +8,7 @@ class DashedDivider extends StatelessWidget {
 
   const DashedDivider({
     this.height = 1,
-    this.color = Colors.black,
+    this.color = Colors.black54,
     this.dashWidth = 2,
     this.dashSpace = 3,
     super.key,

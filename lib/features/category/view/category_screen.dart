@@ -97,7 +97,10 @@ class CategoryScreen extends StatelessWidget {
               },
             ),
 
-            Divider(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: Divider(height: 25, thickness: 1, color: Colors.black),
+            ),
 
             // Grid danh mục con
             if (selectedCategory != null &&

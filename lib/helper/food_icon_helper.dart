@@ -596,7 +596,7 @@ class FoodIconHelper {
         return "assets/icons/vegetables/bamboo.png";
 
       // --- Thịt ---
-      case FoodType.pork:
+      case FoodType.porkBelly:
         return "assets/icons/meats/pork.png";
       case FoodType.duck:
         return "assets/icons/meats/peking-duck.png";
