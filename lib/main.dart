@@ -17,6 +17,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => TabProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => FoodProvider()),
+
+        /// hello
       ],
       // child: DevicePreview(enabled: true, builder: (context) => MyApp()),
       child: MyApp(),
