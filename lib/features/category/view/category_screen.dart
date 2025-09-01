@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/data/category_data.dart';
+import 'add_food_screen.dart';
 import 'food_detail_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
@@ -132,9 +133,19 @@ class CategoryScreen extends StatelessWidget {
                     // Ô cuối cùng = thêm food mới
                     return InkWell(
                       borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        // 👉 xử lý thêm food mới
-                        print("Thêm food mới trong $selectedCategory");
+                      onTap: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                AddFoodScreen(category: selectedCategory),
+                          ),
+                        );
+
+                        if (result != null) {
+                          print("✅ Đã thêm mới: $result");
+                          // 👉 chỗ này bạn có thể gọi API để lưu FoodItem
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(

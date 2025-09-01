@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: AuthScreen(),
+      home: HomeScreen(),
       routes: {
         '/category': (context) => CategoryScreen(),
         '/home': (context) => HomeScreen(),
