@@ -37,6 +37,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/icons/
+    - assets/icons/cook_table/
     - assets/icons/category/
     - assets/icons/fruit/
     - assets/icons/vegetables/
