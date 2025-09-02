@@ -5,10 +5,13 @@ import 'package:da_food/helper/color_helper.dart';
 import 'package:da_food/helper/divider_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/services/food_server.dart';
+import '../../../core/services/user_server.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../model/food_model.dart';
+import '../model/user_model.dart';
 import '../view_model/tab_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,11 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Icons.kitchen,
   ];
 
-  // final prefs = SharedPreferences.getInstance();
-  // late final userId = prefs.getString('userId');
-
   bool isLoading = true;
   List<FoodItem> foods = [];
+  UserModel? user;
 
   Future<void> _loadFoods() async {
     setState(() => isLoading = true);
@@ -43,15 +44,32 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => isLoading = false);
   }
 
+  Future<void> _loadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString("userId") ?? "";
+
+    if (userId.isNotEmpty) {
+      try {
+        final fetchedUser = await UserServer.fetchUserById(userId);
+        setState(() {
+          user = fetchedUser;
+        });
+      } catch (e) {
+        print("Error fetching user: $e");
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadFoods();
+    _loadUser();
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabProvider = TabProvider(); // dùng trực tiếp, không cần Provider
+    final tabProvider = TabProvider(); // không cần Provider nữa
 
     return DefaultTabController(
       length: labels.length,
@@ -72,7 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Column(
                   children: [
-                    _buildHeader(tabProvider),
+                    _buildHeader(tabProvider, user?.name ?? "Đang tải..."),
+
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
@@ -126,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHeader(TabProvider tabProvider) {
+  Widget _buildHeader(TabProvider tabProvider, String username) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
@@ -143,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Food AI x PhanTuoi",
+                "Food AI x $username",
                 style: GoogleFonts.oswald(
                   textStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -163,12 +182,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TabBar(
             onTap: (index) => tabProvider.setTab(index),
             splashFactory: NoSplash.splashFactory,
             overlayColor: MaterialStateProperty.all(Colors.transparent),
-            labelPadding: EdgeInsets.only(bottom: 0, top: 16),
+            labelPadding: const EdgeInsets.only(bottom: 0, top: 16),
             indicator: const RoundedUnderlineTabIndicator(
               borderSide: BorderSide(width: 2.5, color: Colors.white),
               radius: 6.0,
@@ -212,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         return ListView(
-          padding: EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 10),
           children: groupedByCategory.entries.map((entry) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,8 +241,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     horizontal: 12,
                     vertical: 10,
                   ),
-
-                  // Category
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -234,13 +251,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: 10),
-                      Expanded(child: DashedDivider()),
+                      const SizedBox(width: 10),
+                      const Expanded(child: DashedDivider()),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Wrap(
                     spacing: 12,
                     runSpacing: 20,
@@ -316,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Transform.translate(
                 offset: const Offset(10, -1),
-                child: Container(
+                child: SizedBox(
                   width: 30,
                   child: Align(
                     alignment: Alignment.centerRight,
