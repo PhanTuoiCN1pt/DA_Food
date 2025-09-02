@@ -35,15 +35,15 @@ class AddFoodScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<FoodProvider>(context, listen: false);
-
-    // 👉 Khởi tạo food chỉ với category, name = "" để user nhập
     provider.initFood(category: category, name: "");
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Thêm sản phẩm",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Consumer<FoodProvider>(
+          builder: (_, provider, __) => Text(
+            provider.food.name.isEmpty ? "Thêm sản phẩm" : provider.food.name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -53,7 +53,7 @@ class AddFoodScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Consumer<FoodProvider>(
-          builder: (context, provider, _) {
+          builder: (_, provider, __) {
             final food = provider.food;
             return SingleChildScrollView(
               child: Column(
@@ -62,80 +62,138 @@ class AddFoodScreen extends StatelessWidget {
                   // Icon + Category + Editable Name
                   Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0, bottom: 18),
-                        child: SizedBox(
-                          width: 70,
-                          height: 70,
-                          child: Image.asset(
-                            FoodIconHelper.getIconByName(
-                              provider.food.name.isEmpty
-                                  ? "default"
-                                  : provider.food.name,
-                            ),
+                      // Icon
+                      SizedBox(
+                        width: 70,
+                        height: 70,
+                        child: Image.asset(
+                          FoodIconHelper.getIconByName(
+                            food.name.isEmpty ? "default" : food.name,
                           ),
                         ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Category
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: Text(
-                              food.category,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                      const SizedBox(width: 20),
 
-                          // Editable Name (rỗng cho user nhập)
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 16.0,
-                              bottom: 20,
-                              top: 10,
-                            ),
-                            child: Container(
-                              child: SizedBox(
-                                width: 200,
-                                child: TextField(
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                  decoration: InputDecoration(
-                                    hintText: "Nhập tên món ăn...",
-
-                                    hintStyle: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    border: UnderlineInputBorder(),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.blue,
-                                        width: 1,
-                                      ),
-                                    ),
-                                    isDense: true, // thu hẹp padding mặc định
-                                    contentPadding:
-                                        EdgeInsets.zero, // bỏ padding mặc định
-                                  ),
+                      // Category, name
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 20.0),
+                              child: Text(
+                                food.category,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                            TextField(
+                              controller: provider.nameController,
+                              decoration: const InputDecoration(
+                                hintText: "Nhập tên sản phẩm",
+                                border: InputBorder.none,
+                              ),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              onChanged: provider.updateName,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
+
+                  // Vị trí
+                  Row(
+                    children: [
+                      const Text(
+                        "Vị trí",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      SizedBox(
+                        width: 150,
+                        child: DropdownButtonFormField<String>(
+                          value: food.location,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 5,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey.shade300,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          items: ["Tủ lạnh", "Tủ đông", "Nhà bếp"]
+                              .map(
+                                (e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(
+                                    e,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) =>
+                              provider.updateLocation(value ?? "Tủ lạnh"),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Số lượng
+                  Row(
+                    children: [
+                      const Text(
+                        "Số lượng",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.remove_circle,
+                          color: Colors.blue,
+                        ),
+                        onPressed: () {
+                          if (food.quantity > 1) {
+                            provider.updateQuantity(food.quantity - 1);
+                          }
+                        },
+                      ),
+                      Text(
+                        food.quantity.toString(),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add_circle, color: Colors.blue),
+                        onPressed: () =>
+                            provider.updateQuantity(food.quantity + 1),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 30),
 
                   // Ngày mua
                   Row(
@@ -148,36 +206,32 @@ class AddFoodScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      SizedBox(
-                        width: 120,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.grey[200],
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 12,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey.shade200,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                             side: const BorderSide(
                               color: Colors.black,
                               width: 1,
                             ),
                           ),
-                          onPressed: () => _pickDate(context, true),
-                          child: Text(
-                            "${food.registerDate.day}/${food.registerDate.month}/${food.registerDate.year}",
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        onPressed: () => _pickDate(context, true),
+                        child: Text(
+                          "${food.registerDate.day}/${food.registerDate.month}/${food.registerDate.year}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
                         ),
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 10),
 
                   // Ngày hết hạn
@@ -191,32 +245,32 @@ class AddFoodScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      SizedBox(
-                        width: 120,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.grey[200],
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey.shade200,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                             side: const BorderSide(
                               color: Colors.black,
                               width: 1,
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
                           ),
-                          onPressed: () => _pickDate(context, false),
-                          child: Text(
-                            "${food.expiryDate.day}/${food.expiryDate.month}/${food.expiryDate.year}",
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        onPressed: () => _pickDate(context, false),
+                        child: Text(
+                          "${food.expiryDate.day}/${food.expiryDate.month}/${food.expiryDate.year}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
                         ),
                       ),
                     ],
                   ),
-
                   Align(
                     alignment: Alignment.topRight,
                     child: TextButton(
@@ -228,6 +282,21 @@ class AddFoodScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Ghi chú
+                  TextField(
+                    controller: provider.noteController,
+                    decoration: InputDecoration(
+                      hintText: "Nhấn để viết ghi nhớ",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.all(12),
+                    ),
+                    maxLines: 3,
+                    onChanged: provider.updateNote,
                   ),
 
                   const SizedBox(height: 30),
@@ -252,12 +321,11 @@ class AddFoodScreen extends StatelessWidget {
                           );
                           return;
                         }
-
-                        FoodService.addFood(food); // 👉 Lưu vào user
+                        FoodService.addFood(food);
                         Navigator.pop(context);
                       },
                       child: const Text(
-                        "THÊM VÀO",
+                        "THÊM MỚI",
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),

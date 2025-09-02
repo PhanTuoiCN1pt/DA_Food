@@ -1,17 +1,48 @@
+import 'package:da_food/features/category/view/recipes_by_category_screen.dart';
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/data/category_data.dart';
+import '../../../core/services/meal_category_server.dart';
 import 'add_food_screen.dart';
 import 'food_detail_screen.dart';
 
-class CategoryScreen extends StatelessWidget {
-  CategoryScreen({super.key});
+class CategoryScreen extends StatefulWidget {
+  const CategoryScreen({super.key});
+
+  @override
+  State<CategoryScreen> createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
+  List<Map<String, dynamic>> mealCategories = [];
+  bool isLoadingMeals = false;
+
+  Future<void> loadMealCategories() async {
+    setState(() => isLoadingMeals = true);
+    try {
+      final data = await MealCategoryService.fetchMealCategories();
+      setState(() {
+        mealCategories = data;
+      });
+    } catch (e) {
+      debugPrint("❌ Lỗi lấy danh mục món ăn: $e");
+    } finally {
+      setState(() => isLoadingMeals = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final selectedCategory = context.watch<CategoryProvider>().selectedCategory;
+
+    // Nếu chọn "Món ăn" thì load API
+    if (selectedCategory == "Món ăn" &&
+        mealCategories.isEmpty &&
+        !isLoadingMeals) {
+      loadMealCategories();
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +63,7 @@ class CategoryScreen extends StatelessWidget {
           children: [
             // Grid danh mục chính
             GridView.builder(
-              shrinkWrap: true, // 👈 không chiếm hết màn
+              shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.all(10),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -59,28 +90,18 @@ class CategoryScreen extends StatelessWidget {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             )
-                          : null, // khi chưa chọn thì không có gradient
-                      color: isSelected
-                          ? null
-                          : Colors
-                                .transparent, // giữ nền trong suốt khi chưa chọn
+                          : null,
+                      color: isSelected ? null : Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: isSelected
-                            ? Colors.black
-                            : Colors.transparent, // viền khi chưa chọn
+                        color: isSelected ? Colors.black : Colors.transparent,
                         width: 1,
                       ),
                     ),
-
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Image.asset(
-                          item["icon"], // 👈 đổi từ IconData sang đường dẫn
-                          width: 40,
-                          height: 40,
-                        ),
+                        Image.asset(item["icon"], width: 40, height: 40),
                         const SizedBox(height: 6),
                         Text(
                           item["label"],
@@ -103,8 +124,77 @@ class CategoryScreen extends StatelessWidget {
               child: Divider(height: 25, thickness: 1, color: Colors.black),
             ),
 
-            // Grid danh mục con
-            if (selectedCategory != null &&
+            // Nếu chọn category "Món ăn" thì load từ API
+            if (selectedCategory == "Món ăn") ...[
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                child: const Text(
+                  "Món ăn",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+              if (isLoadingMeals)
+                const Center(child: CircularProgressIndicator())
+              else
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                  ).copyWith(bottom: 50),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5,
+                    childAspectRatio: 0.75,
+                  ),
+                  itemCount: mealCategories.length,
+                  itemBuilder: (context, index) {
+                    final subItem = mealCategories[index];
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RecipesByCategoryScreen(
+                                category:
+                                    subItem["label"], // Truyền tên subcategory
+                              ),
+                            ),
+                          );
+                        },
+
+                        child: Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                subItem["icon"],
+                                width: 40,
+                                height: 40,
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                subItem["label"],
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+            ]
+            // Nếu category khác thì vẫn dùng subCategories tĩnh
+            else if (selectedCategory != null &&
                 subCategories.containsKey(selectedCategory)) ...[
               Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
@@ -120,7 +210,7 @@ class CategoryScreen extends StatelessWidget {
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                 ).copyWith(bottom: 50),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -130,7 +220,6 @@ class CategoryScreen extends StatelessWidget {
                 itemCount: subCategories[selectedCategory]!.length + 1,
                 itemBuilder: (context, index) {
                   if (index == subCategories[selectedCategory]!.length) {
-                    // Ô cuối cùng = thêm food mới
                     return InkWell(
                       borderRadius: BorderRadius.circular(8),
                       onTap: () async {
@@ -138,13 +227,12 @@ class CategoryScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (_) =>
-                                AddFoodScreen(category: selectedCategory),
+                                AddFoodScreen(category: selectedCategory!),
                           ),
                         );
 
                         if (result != null) {
-                          print("✅ Đã thêm mới: $result");
-                          // 👉 chỗ này bạn có thể gọi API để lưu FoodItem
+                          debugPrint("✅ Đã thêm mới: $result");
                         }
                       },
                       child: Container(
@@ -160,36 +248,17 @@ class CategoryScreen extends StatelessWidget {
                   }
                   final subItem = subCategories[selectedCategory]![index];
                   return Material(
-                    color: Colors.transparent, // giữ trong suốt
+                    color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(8),
                       onTap: () {
                         Navigator.push(
                           context,
-                          PageRouteBuilder(
-                            transitionDuration: const Duration(
-                              milliseconds: 650,
-                            ),
-                            pageBuilder: (_, animation, __) => FoodDetailScreen(
-                              category: selectedCategory,
+                          MaterialPageRoute(
+                            builder: (_) => FoodDetailScreen(
+                              category: selectedCategory!,
                               subCategory: subItem["label"],
                             ),
-                            transitionsBuilder: (_, animation, __, child) {
-                              const begin = Offset(1.0, 0.0);
-                              const end = Offset.zero;
-                              const curve = Curves.easeInOut;
-
-                              final tween = Tween(
-                                begin: begin,
-                                end: end,
-                              ).chain(CurveTween(curve: curve));
-                              final offsetAnimation = animation.drive(tween);
-
-                              return SlideTransition(
-                                position: offsetAnimation,
-                                child: child,
-                              );
-                            },
                           ),
                         );
                       },

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:da_food/features/category/view/food_edit_screen.dart';
+import 'package:da_food/features/food/view/meal_suggestions_screen.dart';
 import 'package:da_food/features/food/view/widget/rounded_underline_indicator.dart';
 import 'package:da_food/helper/color_helper.dart';
 import 'package:da_food/helper/divider_helper.dart';
@@ -230,7 +231,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     heroTag: "suggestMeal",
                     backgroundColor: Colors.orange,
                     child: const Icon(Icons.restaurant_menu),
-                    onPressed: _showMealSuggestions,
+                    onPressed: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MealSuggestionsScreen(user: user!),
+                        ),
+                      ),
+                    },
                   ),
                 ),
               ],

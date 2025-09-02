@@ -9,6 +9,7 @@ import '../../helper/loader.dart';
 
 class FoodService {
   static const baseUrl = "http://192.168.0.105:5000/api/foods";
+  static const mealUrl = "http://192.168.0.105:5000/api/meals/suggestions";
 
   /// Thêm food và tự lấy userId từ SharedPreferences
   static Future<FoodItem> addFood(FoodItem food) async {
@@ -95,10 +96,9 @@ class FoodService {
     }
   }
 
+  // Gợi ý thực đơn
   static Future<List<RecipeModel>> getMealSuggestions(String userId) async {
-    final url = Uri.parse(
-      "http://192.168.0.105:5000/api/meals/suggestions/$userId",
-    );
+    final url = Uri.parse("$mealUrl/$userId");
     final res = await http.get(url);
 
     if (res.statusCode == 200) {
