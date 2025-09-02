@@ -11,6 +11,7 @@ import '../../../core/services/food_server.dart';
 import '../../../core/services/user_server.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../model/food_model.dart';
+import '../model/recipe_model.dart';
 import '../model/user_model.dart';
 import '../view_model/tab_provider.dart';
 
@@ -32,6 +33,111 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   List<FoodItem> foods = [];
   UserModel? user;
+
+  Future<void> _showMealSuggestions() async {
+    if (user == null || user!.id == null) return;
+
+    // Hiển thị loading
+    showDialog(
+      context: context,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
+
+    try {
+      // Lấy danh sách suggestions từ API trực tiếp
+      final List<RecipeModel> suggestions =
+          await FoodService.getMealSuggestions(user!.id!);
+
+      Navigator.pop(context); // đóng loading
+
+      if (suggestions.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text("Gợi ý món ăn"),
+            content: const Text(
+              "Không tìm thấy món phù hợp với thực phẩm hiện có.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
+      // Hiển thị danh sách món ăn
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => Padding(
+          padding: const EdgeInsets.all(16),
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: suggestions.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (_, index) {
+              final recipe = suggestions[index];
+              return Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        recipe.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Nguyên liệu:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      ...recipe.ingredients.map(
+                        (i) => Text("- ${i.name}: ${i.quantity}"),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Hướng dẫn:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      ...recipe.instructions.map((step) => Text("- $step")),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } catch (e) {
+      Navigator.pop(context); // đóng loading nếu lỗi
+      print("Error fetching meal suggestions: $e");
+
+      // Hiển thị thông báo lỗi
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Lỗi"),
+          content: Text("Không thể lấy gợi ý món ăn.\nLỗi: $e"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   Future<void> _loadFoods() async {
     setState(() => isLoading = true);
@@ -117,8 +223,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: CircularProgressIndicator(color: Colors.white),
                     ),
                   ),
+                Positioned(
+                  bottom: 80,
+                  right: 20,
+                  child: FloatingActionButton(
+                    heroTag: "suggestMeal",
+                    backgroundColor: Colors.orange,
+                    child: const Icon(Icons.restaurant_menu),
+                    onPressed: _showMealSuggestions,
+                  ),
+                ),
               ],
             ),
+
             floatingActionButton: Container(
               width: 60,
               height: 60,

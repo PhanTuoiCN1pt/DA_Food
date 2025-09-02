@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/food/model/food_model.dart';
+import '../../features/food/model/recipe_model.dart';
 import '../../helper/loader.dart';
 
 class FoodService {
@@ -91,6 +92,21 @@ class FoodService {
     final response = await http.delete(Uri.parse("$baseUrl/$id"));
     if (response.statusCode != 200) {
       throw Exception("Failed to delete food: ${response.statusCode}");
+    }
+  }
+
+  static Future<List<RecipeModel>> getMealSuggestions(String userId) async {
+    final url = Uri.parse(
+      "http://192.168.0.105:5000/api/meals/suggestions/$userId",
+    );
+    final res = await http.get(url);
+
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final suggestionsJson = data['suggestions'] as List<dynamic>? ?? [];
+      return suggestionsJson.map((json) => RecipeModel.fromJson(json)).toList();
+    } else {
+      throw Exception("Failed to fetch meal suggestions");
     }
   }
 }
