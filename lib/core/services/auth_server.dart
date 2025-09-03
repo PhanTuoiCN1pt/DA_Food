@@ -31,9 +31,6 @@ class AuthService {
         body: jsonEncode({'email': email, 'password': password}),
       );
 
-      debugPrint("STATUS CODE: ${response.statusCode}");
-      debugPrint("BODY: ${response.body}");
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         await _saveUserLogin(data);

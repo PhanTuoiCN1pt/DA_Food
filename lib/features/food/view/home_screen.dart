@@ -9,10 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/services/food_server.dart';
+import '../../../core/services/recipe_server.dart';
 import '../../../core/services/user_server.dart';
 import '../../../helper/food_icon_helper.dart';
+import '../../category/view/recipe_info_tab_screen.dart';
 import '../model/food_model.dart';
-import '../model/recipe_model.dart';
 import '../model/user_model.dart';
 import '../view_model/tab_provider.dart';
 
@@ -34,111 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   List<FoodItem> foods = [];
   UserModel? user;
-
-  Future<void> _showMealSuggestions() async {
-    if (user == null || user!.id == null) return;
-
-    // Hiển thị loading
-    showDialog(
-      context: context,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
-      barrierDismissible: false,
-    );
-
-    try {
-      // Lấy danh sách suggestions từ API trực tiếp
-      final List<RecipeModel> suggestions =
-          await FoodService.getMealSuggestions(user!.id!);
-
-      Navigator.pop(context); // đóng loading
-
-      if (suggestions.isEmpty) {
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text("Gợi ý món ăn"),
-            content: const Text(
-              "Không tìm thấy món phù hợp với thực phẩm hiện có.",
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
-              ),
-            ],
-          ),
-        );
-        return;
-      }
-
-      // Hiển thị danh sách món ăn
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (_) => Padding(
-          padding: const EdgeInsets.all(16),
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: suggestions.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (_, index) {
-              final recipe = suggestions[index];
-              return Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        recipe.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Nguyên liệu:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      ...recipe.ingredients.map(
-                        (i) => Text("- ${i.name}: ${i.quantity}"),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Hướng dẫn:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      ...recipe.instructions.map((step) => Text("- $step")),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      );
-    } catch (e) {
-      Navigator.pop(context); // đóng loading nếu lỗi
-      print("Error fetching meal suggestions: $e");
-
-      // Hiển thị thông báo lỗi
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text("Lỗi"),
-          content: Text("Không thể lấy gợi ý món ăn.\nLỗi: $e"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("OK"),
-            ),
-          ],
-        ),
-      );
-    }
-  }
 
   Future<void> _loadFoods() async {
     setState(() => isLoading = true);
@@ -217,13 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                if (isLoading)
-                  Container(
-                    color: Colors.black.withOpacity(0.2),
-                    child: const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    ),
-                  ),
+                // if (isLoading)
+                //   Container(
+                //     color: Colors.black.withOpacity(0.2),
+                //     child: const Center(
+                //       child: CircularProgressIndicator(color: Colors.white),
+                //     ),
+                //   ),
                 Positioned(
                   bottom: 80,
                   right: 20,
@@ -342,6 +238,69 @@ class _HomeScreenState extends State<HomeScreen> {
     return TabBarView(
       physics: const BouncingScrollPhysics(),
       children: labels.map((locationLabel) {
+        if (locationLabel == "Nhà bếp") {
+          // 👉 Tab nhà bếp: show recipes theo location
+          return FutureBuilder<List<Map<String, dynamic>>>(
+            future: RecipeService.fetchRecipesByLocation("Nhà bếp"),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text("❌ Lỗi tải món ăn trong Nhà bếp"),
+                );
+              }
+              final recipes = snapshot.data ?? [];
+              if (recipes.isEmpty) {
+                return const Center(
+                  child: Text("Chưa có món ăn trong Nhà bếp"),
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(12),
+                itemCount: recipes.length,
+                itemBuilder: (context, index) {
+                  final recipe = recipes[index];
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 2,
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 4,
+                    ),
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.restaurant_menu,
+                        color: Colors.orange,
+                      ),
+                      title: Text(
+                        recipe["name"] ?? "Không có tên",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        "Nguyên liệu: ${recipe["ingredients"]?.length ?? 0}",
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RecipeInfoTabScreen(recipe: recipe),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        }
+
         final filteredFoods = foods
             .where((f) => f.location == locationLabel)
             .toList();

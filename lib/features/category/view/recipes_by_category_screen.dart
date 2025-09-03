@@ -2,6 +2,7 @@ import 'package:da_food/features/category/view/recipe_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/services/meal_category_server.dart';
+import '../../../core/services/recipe_server.dart';
 
 class RecipesByCategoryScreen extends StatefulWidget {
   final String category;
@@ -42,7 +43,12 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.category)),
+      appBar: AppBar(
+        title: Text(
+          widget.category,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : recipes.isEmpty
@@ -54,7 +60,10 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
                 final recipe = recipes[index];
                 return Card(
                   child: ListTile(
-                    title: Text(recipe["name"] ?? "Không có tên"),
+                    title: Text(
+                      recipe["name"] ?? "Không có tên",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Text(
                       "Nguyên liệu: ${recipe["ingredients"]?.length ?? 0}",
                     ),
@@ -66,6 +75,33 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
                         ),
                       );
                     },
+                    trailing: IconButton(
+                      onPressed: () async {
+                        try {
+                          final result = await RecipeService.addToKitchen(
+                            recipe["_id"],
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "${result["recipe"]["name"]} đã được thêm vào Nhà bếp!",
+                              ),
+                            ),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("❌ Thêm vào Nhà bếp thất bại"),
+                            ),
+                          );
+                        }
+                      },
+                      icon: Image.asset(
+                        "assets/icons/cooking/cooking.png", // đường dẫn ảnh trong assets
+                        width: 28,
+                        height: 28,
+                      ),
+                    ),
                   ),
                 );
               },

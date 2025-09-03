@@ -54,6 +54,7 @@ flutter:
     - assets/icons/nuts/
     - assets/icons/grains/
     - assets/icons/logo/
+    - assets/icons/cooking/
     - assets/animations/login.json
     - assets/animations/order-complete-car-delivery-animation.json
     - assets/animations/register.json
