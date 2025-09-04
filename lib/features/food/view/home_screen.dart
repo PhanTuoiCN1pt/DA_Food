@@ -239,9 +239,9 @@ class _HomeScreenState extends State<HomeScreen> {
       physics: const BouncingScrollPhysics(),
       children: labels.map((locationLabel) {
         if (locationLabel == "Nhà bếp") {
-          // 👉 Tab nhà bếp: show recipes theo location
+          // 👉 Tab Nhà bếp: show recipes theo userId đang đăng nhập
           return FutureBuilder<List<Map<String, dynamic>>>(
-            future: RecipeService.fetchRecipesByLocation("Nhà bếp"),
+            future: RecipeService.getKitchenRecipes(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
