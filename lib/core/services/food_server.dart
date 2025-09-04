@@ -4,12 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/food/model/food_model.dart';
-import '../../features/food/model/recipe_model.dart';
 import '../../helper/loader.dart';
 
 class FoodService {
-  static const baseUrl = "http://192.168.0.105:5000/api/foods";
-  static const mealUrl = "http://192.168.0.105:5000/api/meals/suggestions";
+  static const baseUrl = "http://192.168.0.103:5000/api/foods";
 
   /// Thêm food và tự lấy userId từ SharedPreferences
   static Future<FoodItem> addFood(FoodItem food) async {
@@ -93,20 +91,6 @@ class FoodService {
     final response = await http.delete(Uri.parse("$baseUrl/$id"));
     if (response.statusCode != 200) {
       throw Exception("Failed to delete food: ${response.statusCode}");
-    }
-  }
-
-  // Gợi ý thực đơn
-  static Future<List<RecipeModel>> getMealSuggestions(String userId) async {
-    final url = Uri.parse("$mealUrl/$userId");
-    final res = await http.get(url);
-
-    if (res.statusCode == 200) {
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
-      final suggestionsJson = data['suggestions'] as List<dynamic>? ?? [];
-      return suggestionsJson.map((json) => RecipeModel.fromJson(json)).toList();
-    } else {
-      throw Exception("Failed to fetch meal suggestions");
     }
   }
 }

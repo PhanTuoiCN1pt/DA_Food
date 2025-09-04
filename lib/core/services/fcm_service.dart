@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class FcmService {
   static const String baseUrl =
-      "http://192.168.0.105:5000/api/users/save-token";
+      "http://192.168.0.103:5000/api/users/save-token";
 
   static Future<void> saveToken(String userId, String token) async {
     final response = await http.post(

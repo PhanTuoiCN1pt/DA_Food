@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../features/food/model/user_model.dart';
 
 class UserServer {
-  static const String baseUrl = "http://192.168.0.105:5000/api/users";
+  static const String baseUrl = "http://192.168.0.103:5000/api/users";
 
   // Lấy tất cả user
   static Future<List<UserModel>> fetchAllUsers() async {

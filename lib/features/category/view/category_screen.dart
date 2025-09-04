@@ -1,10 +1,10 @@
+import 'package:da_food/core/services/recipe_server.dart';
 import 'package:da_food/features/category/view/recipes_by_category_screen.dart';
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/data/category_data.dart';
-import '../../../core/services/meal_category_server.dart';
 import 'add_food_screen.dart';
 import 'food_detail_screen.dart';
 
@@ -22,7 +22,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Future<void> loadMealCategories() async {
     setState(() => isLoadingMeals = true);
     try {
-      final data = await MealCategoryService.fetchMealCategories();
+      final data = await RecipeService.fetchMealCategories();
       setState(() {
         mealCategories = data;
       });

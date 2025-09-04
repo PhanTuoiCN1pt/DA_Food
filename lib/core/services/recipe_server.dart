@@ -3,13 +3,48 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RecipeService {
-  static const String baseUrl = "http://192.168.0.105:5000/api/recipes";
-  // ⚠️ Nếu chạy device thật thì đổi thành IP LAN của server
+import '../../features/food/model/recipe_model.dart';
+import '../../helper/category_icon_helper.dart';
 
-  /// Lấy toàn bộ công thức gốc
+class RecipeService {
+  static const String recipeBaseUrl = "http://192.168.0.103:5000/api/recipes";
+
+  /// ================== CATEGORY ==================
+  static Future<List<Map<String, dynamic>>> fetchMealCategories() async {
+    final response = await http.get(Uri.parse("$recipeBaseUrl/categories"));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      // API trả về { "categories": ["Món chính", "Tráng miệng", "Đồ uống"] }
+      final List<dynamic> categories = data["categories"];
+
+      return categories
+          .map((cat) => {"label": cat, "icon": CategoryIconHelper.getIcon(cat)})
+          .toList();
+    } else {
+      throw Exception("❌ Không lấy được danh mục món ăn");
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchRecipesByCategory(
+    String category,
+  ) async {
+    final url = Uri.parse("$recipeBaseUrl/category/$category");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List recipes = data["recipes"] ?? [];
+      return recipes.map((e) => Map<String, dynamic>.from(e)).toList();
+    } else {
+      throw Exception("❌ Lỗi API: ${response.statusCode}");
+    }
+  }
+
+  /// ================== RECIPE ==================
   static Future<List<Map<String, dynamic>>> getRecipes() async {
-    final response = await http.get(Uri.parse(baseUrl));
+    final response = await http.get(Uri.parse(recipeBaseUrl));
     if (response.statusCode == 200) {
       return List<Map<String, dynamic>>.from(jsonDecode(response.body));
     } else {
@@ -17,12 +52,11 @@ class RecipeService {
     }
   }
 
-  /// Tạo công thức mới (gốc)
   static Future<Map<String, dynamic>> createRecipe(
     Map<String, dynamic> recipe,
   ) async {
     final response = await http.post(
-      Uri.parse(baseUrl),
+      Uri.parse(recipeBaseUrl),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(recipe),
     );
@@ -34,7 +68,7 @@ class RecipeService {
     }
   }
 
-  /// Thêm công thức vào Nhà bếp của user
+  /// ================== KITCHEN ==================
   static Future<Map<String, dynamic>> addToKitchen(String recipeId) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString("userId");
@@ -44,7 +78,7 @@ class RecipeService {
     }
 
     final response = await http.put(
-      Uri.parse("$baseUrl/kitchen/$recipeId"),
+      Uri.parse("$recipeBaseUrl/kitchen/$recipeId"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"userId": userId}),
     );
@@ -56,7 +90,6 @@ class RecipeService {
     }
   }
 
-  /// Lấy danh sách công thức trong Nhà bếp của user hiện tại
   static Future<List<Map<String, dynamic>>> getKitchenRecipes() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString("userId");
@@ -66,7 +99,7 @@ class RecipeService {
     }
 
     final response = await http.get(
-      Uri.parse("$baseUrl/kitchen?userId=$userId"), // query userId
+      Uri.parse("$recipeBaseUrl/kitchen?userId=$userId"),
     );
 
     if (response.statusCode == 200) {
@@ -76,12 +109,12 @@ class RecipeService {
     }
   }
 
-  /// Lấy recipes theo location
+  /// ================== LOCATION ==================
   static Future<List<Map<String, dynamic>>> fetchRecipesByLocation(
     String location,
   ) async {
     final response = await http.get(
-      Uri.parse("$baseUrl/location/$location"),
+      Uri.parse("$recipeBaseUrl/location/$location"),
       headers: {"Content-Type": "application/json"},
     );
 
@@ -90,6 +123,20 @@ class RecipeService {
       return List<Map<String, dynamic>>.from(data);
     } else {
       throw Exception("❌ Lỗi lấy recipes theo location");
+    }
+  }
+
+  /// ================== Gợi ý thực đơn==================
+  static Future<List<RecipeModel>> getMealSuggestions(String userId) async {
+    final url = Uri.parse("$recipeBaseUrl/suggestions/$userId");
+    final res = await http.get(url);
+
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final suggestionsJson = data['suggestions'] as List<dynamic>? ?? [];
+      return suggestionsJson.map((json) => RecipeModel.fromJson(json)).toList();
+    } else {
+      throw Exception("Failed to fetch meal suggestions");
     }
   }
 }

@@ -1,6 +1,6 @@
+import 'package:da_food/core/services/recipe_server.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/services/food_server.dart';
 import '../../../features/food/model/recipe_model.dart';
 import '../model/user_model.dart';
 
@@ -19,7 +19,7 @@ class _MealSuggestionsScreenState extends State<MealSuggestionsScreen> {
   @override
   void initState() {
     super.initState();
-    _suggestionsFuture = FoodService.getMealSuggestions(widget.user.id!);
+    _suggestionsFuture = RecipeService.getMealSuggestions(widget.user.id!);
   }
 
   @override

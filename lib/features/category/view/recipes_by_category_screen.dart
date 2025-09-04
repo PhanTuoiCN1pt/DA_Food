@@ -1,7 +1,6 @@
 import 'package:da_food/features/category/view/recipe_detail_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/services/meal_category_server.dart';
 import '../../../core/services/recipe_server.dart';
 
 class RecipesByCategoryScreen extends StatefulWidget {
@@ -27,9 +26,7 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
   Future<void> loadRecipes() async {
     setState(() => isLoading = true);
     try {
-      final data = await MealCategoryService.fetchRecipesByCategory(
-        widget.category,
-      );
+      final data = await RecipeService.fetchRecipesByCategory(widget.category);
       setState(() {
         recipes = data;
       });
