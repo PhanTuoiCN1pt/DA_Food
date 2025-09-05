@@ -46,6 +46,43 @@ class FoodEditScreen extends StatelessWidget {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Image.asset(
+              "assets/icons/icon_app/trash.png",
+              width: 30,
+              height: 30,
+            ),
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text("Xác nhận"),
+                  content: const Text("Bạn có chắc muốn xóa thực phẩm này?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text("Hủy"),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text(
+                        "Xóa",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
+                await FoodService.deleteFood(food.id);
+                Navigator.pop(context); // Quay lại màn trước
+              }
+            },
+          ),
+          SizedBox(width: 20),
+        ],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),

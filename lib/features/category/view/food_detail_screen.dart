@@ -2,6 +2,7 @@ import 'package:da_food/core/services/food_server.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/services/cart_service.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../../food/view_model/food_provider.dart';
 
@@ -54,7 +55,34 @@ class FoodDetailScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: const [Icon(Icons.shopping_bag_outlined), SizedBox(width: 10)],
+        actions: [
+          IconButton(
+            onPressed: () async {
+              try {
+                final provider = Provider.of<FoodProvider>(
+                  context,
+                  listen: false,
+                );
+                final foodName = provider.food.name;
+                final cart = await CartService.addToCart(foodName);
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("Đã thêm vào giỏ hàng")));
+              } catch (e) {
+                print(e);
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("Lỗi: $e")));
+              }
+            },
+            icon: Image.asset(
+              "assets/icons/icon_app/add-to-cart.png",
+              width: 30,
+              height: 30,
+            ),
+          ),
+          SizedBox(width: 20),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
