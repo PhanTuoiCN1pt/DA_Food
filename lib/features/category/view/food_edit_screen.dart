@@ -305,9 +305,11 @@ class FoodEditScreen extends StatelessWidget {
                         ),
                         backgroundColor: Colors.cyan,
                       ),
-                      onPressed: () {
-                        FoodService.updateFood(food);
-                        Navigator.pop(context);
+                      onPressed: () async {
+                        await FoodService.updateFood(
+                          food,
+                        ); // cập nhật lên server
+                        Navigator.pop(context); // pop về HomeScreen2
                       },
                       child: const Text(
                         "CẬP NHẬT",
