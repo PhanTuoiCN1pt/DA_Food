@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../helper/divider_helper.dart';
 import '../../../category/view/food_edit_screen.dart';
 import '../../model/food_model.dart';
+import '../../view_model/food_provider.dart';
 import 'food_card.dart';
 
 class FoodTab extends StatelessWidget {
@@ -69,7 +71,14 @@ class FoodTab extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => FoodEditScreen(food: food),
+                        builder: (_) => ChangeNotifierProvider(
+                          create: (_) {
+                            final provider = FoodProvider();
+                            provider.initFoodFromItem(food);
+                            return provider;
+                          },
+                          child: FoodEditScreen(food: food),
+                        ),
                       ),
                     ).then((_) {
                       if (onReload != null) onReload!();

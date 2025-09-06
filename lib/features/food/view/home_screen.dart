@@ -117,19 +117,28 @@ class _HomeScreenState extends State<HomeScreen>
           Positioned(
             bottom: 80,
             right: 20,
-            child: FloatingActionButton(
-              heroTag: "suggestMeal",
-              backgroundColor: Colors.orange,
-              shape: const CircleBorder(),
-              child: const Icon(Icons.restaurant_menu),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => MealSuggestionsScreen(user: user!),
-                  ),
-                );
-              },
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => MealSuggestionsScreen(user: user!),
+                    ),
+                  );
+                },
+                icon: Image.asset(
+                  "assets/icons/cooking/chef.png",
+                  width: 30,
+                  height: 30,
+                ),
+              ),
             ),
           ),
         ],

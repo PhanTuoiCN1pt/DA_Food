@@ -109,6 +109,17 @@ class RecipeService {
     }
   }
 
+  static Future<Map<String, dynamic>> removeFromKitchen(String recipeId) async {
+    final response = await http.delete(
+      Uri.parse("$recipeBaseUrl/kitchen/delete/$recipeId"),
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("❌ Lỗi xóa recipe khỏi Nhà bếp");
+    }
+  }
+
   /// ================== LOCATION ==================
   static Future<List<Map<String, dynamic>>> fetchRecipesByLocation(
     String location,
