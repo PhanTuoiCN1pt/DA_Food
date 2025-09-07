@@ -4,14 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/food_model.dart';
 
 class FoodProvider with ChangeNotifier {
-  FoodItem? _food; // Nullable để init an toàn
+  FoodItem? _food;
   bool _isNew = true;
 
-  // Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
-  // Getter trả về FoodItem an toàn
   FoodItem get food {
     _food ??= FoodItem(
       id: '',
@@ -66,8 +64,6 @@ class FoodProvider with ChangeNotifier {
     noteController.text = item.note;
     notifyListeners();
   }
-
-  // ========== Update fields ==========
 
   void updateName(String name) {
     if (_food != null) {

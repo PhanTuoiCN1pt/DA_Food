@@ -1,7 +1,7 @@
 import 'package:da_food/features/food/model/food_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/services/recipe_server.dart';
+import '../../../../core/services/recipe_service.dart';
 import '../../../category/view/recipe_info_tab_screen.dart';
 
 class KitchenTab extends StatefulWidget {
@@ -33,7 +33,7 @@ class _KitchenTabState extends State<KitchenTab> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return const Center(child: Text("❌ Lỗi tải món ăn trong Nhà bếp"));
+          return const Center(child: Text("Lỗi tải món ăn trong Nhà bếp"));
         }
         final recipes = snapshot.data ?? [];
         if (recipes.isEmpty) {

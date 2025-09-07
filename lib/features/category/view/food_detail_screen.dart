@@ -1,8 +1,8 @@
-import 'package:da_food/core/services/food_server.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/cart_service.dart';
+import '../../../core/services/food_service.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../../food/view_model/food_provider.dart';
 
@@ -45,6 +45,7 @@ class FoodDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: Consumer<FoodProvider>(
           builder: (context, provider, _) => Text(
             provider.food.name,
@@ -356,10 +357,27 @@ class FoodDetailScreen extends StatelessWidget {
                         ),
                         backgroundColor: Colors.blueAccent,
                       ),
-                      onPressed: () {
-                        FoodService.addFood(food);
-                        Navigator.pop(context);
+                      onPressed: () async {
+                        try {
+                          await FoodService.addFood(food);
+                          Navigator.pop(context);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Đã lưu trữ thực phẩm"),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Thêm thực phẩm thất bại: $e"),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
                       },
+
                       child: const Text(
                         "THÊM VÀO",
                         style: TextStyle(fontSize: 18, color: Colors.white),

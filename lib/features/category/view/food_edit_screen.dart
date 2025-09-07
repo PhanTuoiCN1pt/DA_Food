@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/services/food_server.dart';
+import '../../../core/services/food_service.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../../food/model/food_model.dart';
 import '../../food/view_model/food_provider.dart';
@@ -38,7 +38,7 @@ class FoodEditScreen extends StatelessWidget {
     return ChangeNotifierProvider<FoodProvider>(
       create: (_) {
         final provider = FoodProvider();
-        provider.initFoodFromItem(food); // ⚡ init ngay, tránh null
+        provider.initFoodFromItem(food);
         return provider;
       },
       child: Consumer<FoodProvider>(
@@ -87,7 +87,7 @@ class FoodEditScreen extends StatelessWidget {
 
                     if (confirm == true) {
                       await FoodService.deleteFood(f.id);
-                      Navigator.pop(context); // Quay lại màn trước
+                      Navigator.pop(context);
                     }
                   },
                 ),

@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CartService {
   static const String baseUrl = "http://192.168.0.103:5000/api/cart";
 
-  /// Thêm food vào giỏ hàng (chỉ lưu tên)
+  /// Thêm food vào giỏ hàng
   static Future<List<dynamic>> addToCart(String foodName) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
@@ -22,7 +22,7 @@ class CartService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body); // trả về danh sách cart
+      return jsonDecode(response.body);
     } else {
       throw Exception("Failed to add to cart: ${response.body}");
     }
@@ -46,24 +46,25 @@ class CartService {
     }
   }
 
-  /// Xóa 1 item
-  static Future<List<dynamic>> removeFromCart(
-    String userId,
-    String foodName,
-  ) async {
+  /// Xóa nhiều item cùng lúc
+  static Future<List<dynamic>> deleteCartItems(List<String> itemIds) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     if (userId == null || userId.isEmpty) {
       throw Exception("Bạn chưa đăng nhập");
     }
 
-    final url = Uri.parse("$baseUrl/$userId/remove/$foodName");
-    final response = await http.delete(url);
+    final url = Uri.parse("$baseUrl/$userId/delete-multiple");
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"itemIds": itemIds}),
+    );
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      throw Exception("Failed to remove from cart: ${response.body}");
+      throw Exception("Failed to delete items: ${response.body}");
     }
   }
 
@@ -102,7 +103,7 @@ class CartService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body); // trả về giỏ hàng đã cập nhật
+      return jsonDecode(response.body);
     } else {
       throw Exception("Failed to update cart item: ${response.body}");
     }

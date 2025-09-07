@@ -1,10 +1,10 @@
-import 'package:da_food/core/services/recipe_server.dart';
 import 'package:da_food/features/category/view/recipes_by_category_screen.dart';
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/data/category_data.dart';
+import '../../../core/services/recipe_service.dart';
 import 'add_food_screen.dart';
 import 'food_detail_screen.dart';
 
@@ -27,7 +27,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         mealCategories = data;
       });
     } catch (e) {
-      debugPrint("❌ Lỗi lấy danh mục món ăn: $e");
+      debugPrint("Lỗi lấy danh mục món ăn: $e");
     } finally {
       setState(() => isLoadingMeals = false);
     }
@@ -37,7 +37,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     final selectedCategory = context.watch<CategoryProvider>().selectedCategory;
 
-    // Nếu chọn "Món ăn" thì load API
     if (selectedCategory == "Món ăn" &&
         mealCategories.isEmpty &&
         !isLoadingMeals) {
@@ -46,6 +45,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: const Text(
           "Thể loại",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -232,7 +232,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         );
 
                         if (result != null) {
-                          debugPrint("✅ Đã thêm mới: $result");
+                          debugPrint("Đã thêm mới: $result");
                         }
                       },
                       child: Container(

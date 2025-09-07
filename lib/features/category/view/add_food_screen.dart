@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/services/food_server.dart';
+import '../../../core/services/food_service.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../../food/view_model/food_provider.dart';
 
@@ -39,6 +39,7 @@ class AddFoodScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: Consumer<FoodProvider>(
           builder: (_, provider, __) => Text(
             provider.food.name.isEmpty ? "Thêm sản phẩm" : provider.food.name,
@@ -63,12 +64,15 @@ class AddFoodScreen extends StatelessWidget {
                   Row(
                     children: [
                       // Icon
-                      SizedBox(
-                        width: 70,
-                        height: 70,
-                        child: Image.asset(
-                          FoodIconHelper.getIconByName(
-                            food.name.isEmpty ? "default" : food.name,
+                      Padding(
+                        padding: EdgeInsets.only(left: 8.0, bottom: 18),
+                        child: SizedBox(
+                          width: 70,
+                          height: 70,
+                          child: Image.asset(
+                            FoodIconHelper.getIconByName(
+                              food.name.isEmpty ? "default" : food.name,
+                            ),
                           ),
                         ),
                       ),

@@ -16,10 +16,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   Future<void> _prepareResources() async {
-    // Giả lập load dữ liệu (3 giây)
     await Future.delayed(const Duration(seconds: 4));
 
-    // Sau khi load xong → sang Dashboard
     if (mounted) {
       Navigator.pushReplacementNamed(context, '/home');
     }
@@ -33,7 +31,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 👇 Thay loading bằng animation Lottie
             Lottie.asset(
               "assets/animations/login.json",
               width: 150,

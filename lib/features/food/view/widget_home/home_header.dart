@@ -49,10 +49,20 @@ class HomeHeader extends StatelessWidget {
                 ),
               ),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.search, color: Colors.white),
-                  const SizedBox(width: 12),
                   IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () {},
+                    icon: Image.asset(
+                      "assets/icons/icon_app/search.png",
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                  IconButton(
+                    padding: EdgeInsets.zero,
                     onPressed: () {
                       if (user != null) {
                         Navigator.push(
@@ -70,8 +80,15 @@ class HomeHeader extends StatelessWidget {
                       height: 30,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  const Icon(Icons.more_vert, color: Colors.white),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {},
+                    icon: Image.asset(
+                      "assets/icons/icon_app/three-dots.png",
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -79,7 +96,6 @@ class HomeHeader extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // 🔹 TabBar
           TabBar(
             controller: tabController,
             isScrollable: false,

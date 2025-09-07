@@ -25,7 +25,7 @@ class FoodTab extends StatelessWidget {
       return const Center(child: Text("Không có thực phẩm nào"));
     }
 
-    // Gom nhóm theo category
+    // Gom nhóm theo danh mục
     final Map<String, List<FoodItem>> groupedFoods = {};
     for (var food in foods) {
       groupedFoods.putIfAbsent(food.category, () => []).add(food);

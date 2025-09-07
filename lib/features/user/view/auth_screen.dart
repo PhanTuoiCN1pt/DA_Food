@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:da_food/core/services/auth_server.dart';
 import 'package:da_food/features/user/view/widget/constants.dart';
 import 'package:da_food/features/user/view/widget/login_form.dart';
 import 'package:da_food/features/user/view/widget/signup_form.dart';
@@ -8,6 +7,7 @@ import 'package:da_food/features/user/view/widget/social_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../core/services/auth_service.dart';
 import 'loading_screen.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -81,7 +81,7 @@ class _AuthScreenState extends State<AuthScreen>
     final _size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset:
-          false, // 👈 ngăn layout bị đẩy khi bàn phím hiện lên
+          false, // ngăn layout bị đẩy khi bàn phím hiện lên
       body: SafeArea(
         child: AnimatedBuilder(
           animation: _animationController,
@@ -105,10 +105,7 @@ class _AuthScreenState extends State<AuthScreen>
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            Color(0xFFA8E6CF), // tím
-                            Color(0xFFFFF3E0), // xanh dương
-                          ],
+                          colors: [Color(0xFFA8E6CF), Color(0xFFFFF3E0)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -139,10 +136,7 @@ class _AuthScreenState extends State<AuthScreen>
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF1C1C1C), // tím
-                            Color(0xFFB87333), // xanh dương
-                          ],
+                          colors: [Color(0xFF1C1C1C), Color(0xFFB87333)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -152,9 +146,6 @@ class _AuthScreenState extends State<AuthScreen>
                         emailController: signupEmailController,
                         passwordController: signupPasswordController,
                         signUpFormKey: _signupKey,
-
-                        // confirmController:
-                        //     TextEditingController(), // nếu bạn muốn confirm password
                       ),
                     ),
                   ),
@@ -233,7 +224,7 @@ class _AuthScreenState extends State<AuthScreen>
                             );
                           }
                         },
-                        // 👈 gọi API khi bấm
+                        // gọi API
                         child: Container(
                           alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(

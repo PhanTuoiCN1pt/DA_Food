@@ -9,7 +9,7 @@ class FoodItem {
   DateTime registerDate;
   DateTime expiryDate;
   String note;
-  int storageDuration; // số ngày lưu trữ mặc định
+  int storageDuration;
 
   FoodItem({
     String? id,

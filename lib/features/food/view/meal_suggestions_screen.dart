@@ -1,6 +1,6 @@
-import 'package:da_food/core/services/recipe_server.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/services/recipe_service.dart';
 import '../../../features/food/model/recipe_model.dart';
 import '../model/user_model.dart';
 
@@ -25,7 +25,13 @@ class _MealSuggestionsScreenState extends State<MealSuggestionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Gợi ý món ăn")),
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: const Text(
+          "Gợi ý món ăn",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       body: FutureBuilder<List<RecipeModel>>(
         future: _suggestionsFuture,
         builder: (context, snapshot) {

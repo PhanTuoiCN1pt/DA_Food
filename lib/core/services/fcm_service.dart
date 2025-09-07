@@ -14,7 +14,7 @@ class FcmService {
     );
 
     if (response.statusCode == 200) {
-      print("FCM Token đã lưu thành công ✅");
+      print("FCM Token đã lưu thành công");
     } else {
       print("Lỗi khi lưu FCM token: ${response.body}");
     }

@@ -1,5 +1,5 @@
 class RecipeModel {
-  String? id; // MongoDB _id (có thể null khi tạo mới)
+  String? id;
   String name;
   List<Ingredient> ingredients;
   List<String> instructions;
@@ -45,7 +45,7 @@ class RecipeModel {
 }
 
 class Ingredient {
-  String? id; // MongoDB _id của nguyên liệu
+  String? id;
   String name;
   String quantity;
 

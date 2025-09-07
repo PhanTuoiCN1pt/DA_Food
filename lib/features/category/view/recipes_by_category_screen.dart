@@ -1,7 +1,7 @@
 import 'package:da_food/features/category/view/recipe_detail_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/services/recipe_server.dart';
+import '../../../core/services/recipe_service.dart';
 
 class RecipesByCategoryScreen extends StatefulWidget {
   final String category;
@@ -31,7 +31,7 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
         recipes = data;
       });
     } catch (e) {
-      debugPrint("❌ Lỗi lấy món ăn theo category: $e");
+      debugPrint("Lỗi lấy món ăn theo danh mục: $e");
     } finally {
       setState(() => isLoading = false);
     }
@@ -41,6 +41,7 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: Text(
           widget.category,
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -88,13 +89,13 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("❌ Thêm vào Nhà bếp thất bại"),
+                              content: Text("Món ăn đã có trong Nhà bếp"),
                             ),
                           );
                         }
                       },
                       icon: Image.asset(
-                        "assets/icons/cooking/cooking.png", // đường dẫn ảnh trong assets
+                        "assets/icons/cooking/cooking.png",
                         width: 28,
                         height: 28,
                       ),

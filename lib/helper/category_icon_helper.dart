@@ -8,7 +8,7 @@ class CategoryIconHelper {
       case "Đồ uống":
         return "assets/icons/alcohol/brandy.png";
       default:
-        return "assets/icons/alcohol/beer.png"; // icon mặc định
+        return "assets/icons/alcohol/beer.png";
     }
   }
 }

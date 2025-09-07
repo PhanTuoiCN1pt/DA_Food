@@ -16,14 +16,13 @@ class RecipeService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // API trả về { "categories": ["Món chính", "Tráng miệng", "Đồ uống"] }
       final List<dynamic> categories = data["categories"];
 
       return categories
           .map((cat) => {"label": cat, "icon": CategoryIconHelper.getIcon(cat)})
           .toList();
     } else {
-      throw Exception("❌ Không lấy được danh mục món ăn");
+      throw Exception("Không lấy được danh mục món ăn");
     }
   }
 
@@ -38,7 +37,7 @@ class RecipeService {
       final List recipes = data["recipes"] ?? [];
       return recipes.map((e) => Map<String, dynamic>.from(e)).toList();
     } else {
-      throw Exception("❌ Lỗi API: ${response.statusCode}");
+      throw Exception("Lỗi API: ${response.statusCode}");
     }
   }
 
@@ -48,7 +47,7 @@ class RecipeService {
     if (response.statusCode == 200) {
       return List<Map<String, dynamic>>.from(jsonDecode(response.body));
     } else {
-      throw Exception("❌ Lỗi lấy công thức");
+      throw Exception("Lỗi lấy công thức");
     }
   }
 
@@ -64,7 +63,7 @@ class RecipeService {
     if (response.statusCode == 201) {
       return jsonDecode(response.body);
     } else {
-      throw Exception("❌ Lỗi tạo công thức");
+      throw Exception("Lỗi tạo công thức");
     }
   }
 
@@ -74,7 +73,7 @@ class RecipeService {
     final userId = prefs.getString("userId");
 
     if (userId == null) {
-      throw Exception("❌ Không tìm thấy userId trong SharedPreferences");
+      throw Exception("Không tìm thấy userId trong SharedPreferences");
     }
 
     final response = await http.put(
@@ -86,7 +85,7 @@ class RecipeService {
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
     } else {
-      throw Exception("❌ Lỗi thêm vào Nhà bếp");
+      throw Exception("Lỗi thêm vào Nhà bếp");
     }
   }
 
@@ -95,7 +94,7 @@ class RecipeService {
     final userId = prefs.getString("userId");
 
     if (userId == null) {
-      throw Exception("❌ Không tìm thấy userId trong SharedPreferences");
+      throw Exception("Không tìm thấy userId trong SharedPreferences");
     }
 
     final response = await http.get(
@@ -105,7 +104,7 @@ class RecipeService {
     if (response.statusCode == 200) {
       return List<Map<String, dynamic>>.from(jsonDecode(response.body));
     } else {
-      throw Exception("❌ Lỗi lấy danh sách Nhà bếp");
+      throw Exception("Lỗi lấy danh sách Nhà bếp");
     }
   }
 
@@ -116,7 +115,7 @@ class RecipeService {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      throw Exception("❌ Lỗi xóa recipe khỏi Nhà bếp");
+      throw Exception("Lỗi xóa món ăn khỏi Nhà bếp");
     }
   }
 
@@ -133,7 +132,7 @@ class RecipeService {
       final List data = jsonDecode(response.body);
       return List<Map<String, dynamic>>.from(data);
     } else {
-      throw Exception("❌ Lỗi lấy recipes theo location");
+      throw Exception("Lỗi lấy món ăn theo vị trí");
     }
   }
 
@@ -147,7 +146,7 @@ class RecipeService {
       final suggestionsJson = data['suggestions'] as List<dynamic>? ?? [];
       return suggestionsJson.map((json) => RecipeModel.fromJson(json)).toList();
     } else {
-      throw Exception("Failed to fetch meal suggestions");
+      throw Exception("Lỗi khi hiển thị thực đơn");
     }
   }
 }

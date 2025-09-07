@@ -14,6 +14,7 @@ class RecipeDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: Text(
           recipe["name"] ?? "Chi tiết món ăn",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -24,23 +25,16 @@ class RecipeDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Tên món
-            // Text(
-            //   recipe["name"] ?? "Không có tên",
-            //   style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            // ),
-            // const SizedBox(height: 16),
-
             // Nguyên liệu
             const Text(
-              "Nguyên liệu:",
+              "Nguyên liệu",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             ...ingredients.map(
               (item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Text("• ${item["name"]} - ${item["quantity"]}"),
+                child: Text("- ${item["name"]} : ${item["quantity"]}"),
               ),
             ),
 
@@ -48,16 +42,15 @@ class RecipeDetailScreen extends StatelessWidget {
 
             // Hướng dẫn
             const Text(
-              "Cách nấu:",
+              "Cách nấu",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             ...instructions.asMap().entries.map((entry) {
               final step = entry.value;
-              final index = entry.key + 1;
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text("$index. $step"),
+                child: Text("- $step"),
               );
             }),
           ],

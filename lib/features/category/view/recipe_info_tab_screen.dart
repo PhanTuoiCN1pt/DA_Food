@@ -7,7 +7,6 @@ class RecipeInfoTabScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Ép kiểu ingredients sang List<Map>
     final ingredients = List<Map<String, dynamic>>.from(
       recipe["ingredients"] ?? [],
     );
@@ -15,6 +14,7 @@ class RecipeInfoTabScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: Text(
           recipe["name"] ?? "Chi tiết món ăn",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -33,7 +33,7 @@ class RecipeInfoTabScreen extends StatelessWidget {
               final name = ing["name"] ?? "Không rõ";
               final quantity = ing["quantity"] ?? "";
               return Text(
-                "- $name ${quantity.isNotEmpty ? "($quantity)" : ""}",
+                "- $name ${quantity.isNotEmpty ? ": $quantity" : ""}",
                 style: TextStyle(fontSize: 16),
               );
             }),
@@ -48,7 +48,7 @@ class RecipeInfoTabScreen extends StatelessWidget {
             ...instructions.asMap().entries.map(
               (e) => Padding(
                 padding: const EdgeInsets.only(bottom: 6),
-                child: Text("${e.key + 1}. ${e.value}"),
+                child: Text("- ${e.value}", style: TextStyle(fontSize: 16)),
               ),
             ),
           ],

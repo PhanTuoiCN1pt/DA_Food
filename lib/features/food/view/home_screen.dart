@@ -4,8 +4,8 @@ import 'package:da_food/features/food/view/widget_home/kitchen_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/services/food_server.dart';
-import '../../../core/services/user_server.dart';
+import '../../../core/services/food_service.dart';
+import '../../../core/services/user_service.dart';
 import '../../../helper/color_helper.dart';
 import '../../food/model/food_model.dart';
 import '../model/user_model.dart';
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen>
         _loading = false;
       });
     } catch (e) {
-      debugPrint("❌ Lỗi load foods: $e");
+      debugPrint("Lỗi load foods: $e");
       setState(() => _loading = false);
     }
   }
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           Column(
             children: [
-              // 🔹 Header chung
+              //  Header chung
               HomeHeader(
                 tabController: _tabController,
                 username: user?.name ?? "Đang tải...",
@@ -81,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen>
                 user: user,
               ),
 
-              // 🔹 Nội dung
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -114,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen>
             ],
           ),
 
-          // 🔹 Nút suggestMeal nổi trên màn hình
+          // Nút suggestMeal
           Positioned(
             bottom: 80,
             right: 20,
@@ -145,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
 
-      // 🔹 Nút add mặc định
+      // Nút add mặc định
       floatingActionButton: Container(
         width: 60,
         height: 60,
