@@ -1,31 +1,39 @@
+import 'cart_model.dart';
+
 class UserModel {
-  String? id; // _id của MongoDB (có thể null khi tạo mới)
+  String? id;
   String name;
   String email;
   String password;
+  List<CartItem> cart;
 
   UserModel({
     this.id,
     required this.name,
     required this.email,
     required this.password,
+    this.cart = const [],
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['_id']?.toString(), // MongoDB trả về _id
+      id: json['_id']?.toString(),
       name: json['name'] ?? "",
       email: json['email'] ?? "",
       password: json['password'] ?? "",
+      cart: (json['cart'] as List<dynamic>? ?? [])
+          .map((e) => CartItem.fromJson(e))
+          .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) "_id": id, // khi update thì gửi _id
+      if (id != null) "_id": id,
       "name": name,
       "email": email,
       "password": password,
+      "cart": cart.map((e) => e.toJson()).toList(),
     };
   }
 }

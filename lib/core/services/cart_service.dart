@@ -82,4 +82,29 @@ class CartService {
       throw Exception("Failed to clear cart: ${response.body}");
     }
   }
+
+  /// Cập nhật trạng thái done của 1 item
+  static Future<List<dynamic>> updateCartItemDone(
+    String itemId,
+    bool done,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    if (userId == null || userId.isEmpty) {
+      throw Exception("Bạn chưa đăng nhập");
+    }
+
+    final url = Uri.parse("$baseUrl/$userId/update/$itemId");
+    final response = await http.put(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"done": done}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // trả về giỏ hàng đã cập nhật
+    } else {
+      throw Exception("Failed to update cart item: ${response.body}");
+    }
+  }
 }

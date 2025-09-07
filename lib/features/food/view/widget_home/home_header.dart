@@ -1,18 +1,22 @@
+import 'package:da_food/features/food/view/cart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../model/user_model.dart';
 import '../widget/rounded_underline_indicator.dart';
 
 class HomeHeader extends StatelessWidget {
   final TabController tabController;
   final String username;
   final List<String> labels;
+  final UserModel? user;
 
   const HomeHeader({
     super.key,
     required this.tabController,
     required this.username,
     required this.labels,
+    this.user,
   });
 
   @override
@@ -45,12 +49,29 @@ class HomeHeader extends StatelessWidget {
                 ),
               ),
               Row(
-                children: const [
-                  Icon(Icons.search, color: Colors.white),
-                  SizedBox(width: 12),
-                  Icon(Icons.shopping_cart, color: Colors.white),
-                  SizedBox(width: 12),
-                  Icon(Icons.more_vert, color: Colors.white),
+                children: [
+                  const Icon(Icons.search, color: Colors.white),
+                  const SizedBox(width: 12),
+                  IconButton(
+                    onPressed: () {
+                      if (user != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                CartScreen(userId: user!.id.toString()),
+                          ),
+                        );
+                      }
+                    },
+                    icon: Image.asset(
+                      "assets/icons/icon_app/add-to-cart.png",
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Icon(Icons.more_vert, color: Colors.white),
                 ],
               ),
             ],
@@ -58,9 +79,9 @@ class HomeHeader extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // 🔹 TabBar có controller
+          // 🔹 TabBar
           TabBar(
-            controller: tabController, // ✅ Bắt buộc
+            controller: tabController,
             isScrollable: false,
             splashFactory: NoSplash.splashFactory,
             overlayColor: MaterialStateProperty.all(Colors.transparent),
@@ -74,15 +95,17 @@ class HomeHeader extends StatelessWidget {
             dividerColor: Colors.transparent,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.black,
-            tabs: List.generate(labels.length, (index) {
-              return Text(
-                labels[index],
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              );
-            }),
+            tabs: labels
+                .map(
+                  (label) => Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+                .toList(),
           ),
         ],
       ),

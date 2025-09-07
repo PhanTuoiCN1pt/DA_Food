@@ -78,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen>
                 tabController: _tabController,
                 username: user?.name ?? "Đang tải...",
                 labels: labels,
+                user: user,
               ),
 
               // 🔹 Nội dung
