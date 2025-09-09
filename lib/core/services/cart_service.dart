@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../connect/api_url.dart';
+
 class CartService {
-  static const String baseUrl = "http://192.168.0.103:5000/api/cart";
+  static final String baseUrl = "$apiUrl/api/cart";
 
   /// Thêm food vào giỏ hàng
   static Future<List<dynamic>> addToCart(String foodName) async {

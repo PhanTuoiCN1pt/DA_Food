@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../connect/api_url.dart';
+
 class FcmService {
-  static const String baseUrl =
-      "http://192.168.0.103:5000/api/users/save-token";
+  static final String baseUrl = "$apiUrl/api/users/save-token";
 
   static Future<void> saveToken(String userId, String token) async {
     final response = await http.post(

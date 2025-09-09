@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/cart_service.dart';
-import '../../../core/services/food_service.dart';
 import '../../../helper/food_icon_helper.dart';
 import '../../food/view_model/food_provider.dart';
 
@@ -359,11 +358,11 @@ class FoodDetailScreen extends StatelessWidget {
                       ),
                       onPressed: () async {
                         try {
-                          await FoodService.addFood(food);
+                          await provider.addFood(provider.food);
                           Navigator.pop(context);
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text("Đã lưu trữ thực phẩm"),
                               duration: Duration(seconds: 2),
                             ),
@@ -372,7 +371,7 @@ class FoodDetailScreen extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("Thêm thực phẩm thất bại: $e"),
-                              duration: Duration(seconds: 3),
+                              duration: const Duration(seconds: 3),
                             ),
                           );
                         }

@@ -5,9 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../helper/loader.dart';
+import '../../connect/api_url.dart';
 
 class AuthService {
-  static const String baseUrl = "http://192.168.0.103:5000/api/auths";
+  static final String baseUrl = "$apiUrl/api/auths";
 
   /// -------------------- LOGIN --------------------
   static Future<void> login({

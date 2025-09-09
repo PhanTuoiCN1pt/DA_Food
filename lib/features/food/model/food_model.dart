@@ -5,7 +5,6 @@ class FoodItem {
   String name;
   int quantity;
   String location;
-  String subLocation;
   DateTime registerDate;
   DateTime expiryDate;
   String note;
@@ -18,9 +17,8 @@ class FoodItem {
     required this.name,
     this.quantity = 1,
     this.location = "Tủ lạnh",
-    this.subLocation = "Không xác định",
     DateTime? registerDate,
-    int storageDuration = 7, // mặc định 7 ngày
+    int storageDuration = 7,
     DateTime? expiryDate,
     this.note = "",
   }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString(),
@@ -44,7 +42,6 @@ class FoodItem {
       name: json['name'] ?? '',
       quantity: json['quantity'] ?? 1,
       location: json['location'] ?? 'Tủ lạnh',
-      subLocation: json['subLocation'] ?? 'Không xác định',
       registerDate: regDate,
       storageDuration: duration,
       expiryDate:
@@ -62,7 +59,6 @@ class FoodItem {
       "name": name,
       "quantity": quantity,
       "location": location,
-      "subLocation": subLocation,
       "registerDate": registerDate.toIso8601String(),
       "expiryDate": expiryDate.toIso8601String(),
       "storageDuration": storageDuration,

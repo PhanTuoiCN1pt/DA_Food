@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../connect/api_url.dart';
 import '../../features/food/model/recipe_model.dart';
 import '../../helper/category_icon_helper.dart';
 
 class RecipeService {
-  static const String recipeBaseUrl = "http://192.168.0.103:5000/api/recipes";
+  static final String recipeBaseUrl = "$apiUrl/api/recipes";
 
   /// ================== CATEGORY ==================
   static Future<List<Map<String, dynamic>>> fetchMealCategories() async {

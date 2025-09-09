@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../connect/api_url.dart';
 import '../../features/food/model/food_model.dart';
 
 class FoodService {
-  static const baseUrl = "http://192.168.0.103:5000/api/foods";
+  static final baseUrl = "$apiUrl/api/foods";
 
   /// Thêm food, tự lấy userId từ SharedPreferences
   static Future<FoodItem> addFood(FoodItem food) async {
@@ -79,6 +80,32 @@ class FoodService {
     final response = await http.delete(Uri.parse("$baseUrl/$id"));
     if (response.statusCode != 200) {
       throw Exception("Failed to delete food: ${response.statusCode}");
+    }
+  }
+
+  /// Tìm kiếm food theo keyword
+  static Future<List<FoodItem>> searchFoods(String keyword) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId') ?? '';
+
+    if (userId.isEmpty) {
+      throw Exception("Bạn chưa đăng nhập");
+    }
+
+    final uri = Uri.parse("$baseUrl/search").replace(
+      queryParameters: {
+        "userId": userId,
+        if (keyword.trim().isNotEmpty) "keyword": keyword.trim(),
+      },
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => FoodItem.fromJson(json)).toList();
+    } else {
+      throw Exception("Failed to search foods: ${response.body}");
     }
   }
 }

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../helper/divider_helper.dart';
 import '../../../category/view/food_edit_screen.dart';
 import '../../model/food_model.dart';
-import '../../view_model/food_provider.dart';
 import 'food_card.dart';
 
 class FoodTab extends StatelessWidget {
   final String locationLabel;
-  List<FoodItem> foods = [];
+  final List<FoodItem> foods;
   final VoidCallback? onReload;
 
-  FoodTab({
+  const FoodTab({
     super.key,
     required this.locationLabel,
     required this.foods,
@@ -66,19 +64,13 @@ class FoodTab extends StatelessWidget {
                 final daysLeft = food.expiryDate
                     .difference(DateTime.now())
                     .inDays;
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ChangeNotifierProvider(
-                          create: (_) {
-                            final provider = FoodProvider();
-                            provider.initFoodFromItem(food);
-                            return provider;
-                          },
-                          child: FoodEditScreen(food: food),
-                        ),
+                        builder: (_) => FoodEditScreen(food: food),
                       ),
                     ).then((_) {
                       if (onReload != null) onReload!();
@@ -93,7 +85,9 @@ class FoodTab extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (_) => FoodEditScreen(food: food),
                         ),
-                      ).then((_) => {if (onReload != null) onReload!()});
+                      ).then((_) {
+                        if (onReload != null) onReload!();
+                      });
                     },
                   ),
                 );

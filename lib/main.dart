@@ -1,5 +1,6 @@
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:da_food/features/food/view_model/food_provider.dart';
+import 'package:da_food/features/food/view_model/recipe_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => TabProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => FoodProvider()),
+        ChangeNotifierProvider(create: (_) => RecipeProvider()),
       ],
       // child: DevicePreview(enabled: true, builder: (context) => MyApp()),
       child: MyApp(),

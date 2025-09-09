@@ -27,7 +27,7 @@ class _KitchenTabState extends State<KitchenTab> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-      future: RecipeService.getKitchenRecipes(),
+      future: _kitchenFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -52,11 +52,6 @@ class _KitchenTabState extends State<KitchenTab> {
               elevation: 2,
               margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
               child: ListTile(
-                leading: Image.asset(
-                  "assets/icons/cooking/cook-book.png",
-                  width: 35,
-                  height: 35,
-                ),
                 title: Text(
                   recipe["name"] ?? "Không có tên",
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -90,11 +85,10 @@ class _KitchenTabState extends State<KitchenTab> {
                     if (confirm == true) {
                       await RecipeService.removeFromKitchen(recipe["_id"]);
                       setState(() {
-                        _loadKitchen(); // reload danh sách
+                        _loadKitchen();
                       });
                       (context as Element).reassemble();
                     }
-                    // Xóa món ăn khỏi Kitchen
                   },
                   icon: Image.asset(
                     "assets/icons/icon_app/food-waste.png",

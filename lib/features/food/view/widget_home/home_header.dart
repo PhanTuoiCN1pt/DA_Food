@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/user_model.dart';
+import '../food_search_screen.dart';
 import '../widget/rounded_underline_indicator.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -34,7 +35,7 @@ class HomeHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 Header title + icons
+          // Header title + icons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -54,7 +55,13 @@ class HomeHeader extends StatelessWidget {
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => FoodSearchScreen()),
+                      );
+                    },
+
                     icon: Image.asset(
                       "assets/icons/icon_app/search.png",
                       width: 30,

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/food_service.dart';
 import '../model/food_model.dart';
 
 class FoodProvider with ChangeNotifier {
+  // ---------- STATE CHI TIẾT 1 FOOD ----------
   FoodItem? _food;
   bool _isNew = true;
 
@@ -18,7 +20,6 @@ class FoodProvider with ChangeNotifier {
       name: '',
       quantity: 1,
       location: 'Tủ lạnh',
-      subLocation: '',
       registerDate: DateTime.now(),
       expiryDate: DateTime.now().add(const Duration(days: 7)),
       note: '',
@@ -45,7 +46,6 @@ class FoodProvider with ChangeNotifier {
       name: name,
       quantity: 1,
       location: "Tủ lạnh",
-      subLocation: "Không xác định",
       registerDate: DateTime.now(),
       expiryDate: DateTime.now().add(const Duration(days: 7)),
       note: "",
@@ -86,13 +86,6 @@ class FoodProvider with ChangeNotifier {
     }
   }
 
-  void updateSubLocation(String subLocation) {
-    if (_food != null) {
-      _food!.subLocation = subLocation;
-      notifyListeners();
-    }
-  }
-
   void updateRegisterDate(DateTime date) {
     if (_food != null) {
       _food!.registerDate = date;
@@ -115,6 +108,84 @@ class FoodProvider with ChangeNotifier {
   }
 
   Map<String, dynamic> toJson() => _food?.toJson() ?? {};
+
+  // ---------- STATE DANH SÁCH FOODS ----------
+  List<FoodItem> _foods = [];
+  List<FoodItem> get foods => _foods;
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
+  /// Lấy danh sách food
+  Future<void> fetchFoods() async {
+    try {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      _foods = await FoodService.fetchFoods();
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
+  /// Thêm food
+  Future<void> addFood(FoodItem food) async {
+    try {
+      final newFood = await FoodService.addFood(food);
+      _foods.add(newFood);
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
+  /// Cập nhật food
+  Future<void> updateFood(FoodItem food) async {
+    try {
+      final updatedFood = await FoodService.updateFood(food);
+      final index = _foods.indexWhere((f) => f.id == food.id);
+      if (index != -1) {
+        _foods[index] = updatedFood;
+        notifyListeners();
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
+  /// Xóa food
+  Future<void> deleteFood(String id) async {
+    try {
+      await FoodService.deleteFood(id);
+      _foods.removeWhere((f) => f.id == id);
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
+  /// Lấy food theo ID
+  Future<FoodItem?> getFoodById(String id) async {
+    try {
+      return await FoodService.getFoodById(id);
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return null;
+    }
+  }
 
   @override
   void dispose() {
