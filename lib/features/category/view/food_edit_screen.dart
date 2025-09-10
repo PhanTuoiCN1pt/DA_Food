@@ -6,10 +6,22 @@ import '../../../helper/food_icon_helper.dart';
 import '../../food/model/food_model.dart';
 import '../../food/view_model/food_provider.dart';
 
-class FoodEditScreen extends StatelessWidget {
+class FoodEditScreen extends StatefulWidget {
   final FoodItem food;
 
   const FoodEditScreen({super.key, required this.food});
+
+  @override
+  State<FoodEditScreen> createState() => _FoodEditScreenState();
+}
+
+class _FoodEditScreenState extends State<FoodEditScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<FoodProvider>(context, listen: false);
+    provider.initFoodFromItem(widget.food); // ✅ gán food vào provider
+  }
 
   Future<void> _pickDate(BuildContext context, bool isRegister) async {
     final provider = Provider.of<FoodProvider>(context, listen: false);
