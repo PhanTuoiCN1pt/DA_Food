@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/services/food_service.dart';
-import '../../../core/services/notification_service.dart';
 import '../model/food_model.dart';
 
 class FoodProvider with ChangeNotifier {
@@ -63,7 +62,7 @@ class FoodProvider with ChangeNotifier {
     _isNew = false;
     nameController.text = item.name;
     noteController.text = item.note;
-    notifyListeners();
+    // notifyListeners();
   }
 
   void updateName(String name) {
@@ -143,22 +142,6 @@ class FoodProvider with ChangeNotifier {
     try {
       final newFood = await FoodService.addFood(food);
       _foods.add(newFood);
-
-      // // Lên lịch nhắc 1 ngày trước
-      // await NotificationService.scheduleExpiryNotification(
-      //   int.parse(newFood.id.hashCode.toString().substring(0, 6)),
-      //   newFood.name,
-      //   newFood.expiryDate,
-      // );
-
-      // // Test thông báo 5 giây sau
-      // await NotificationService.schedule5sNotification(
-      //   int.parse(newFood.id.hashCode.toString().substring(0, 6)),
-      //   newFood.name,
-      //   newFood.expiryDate,
-      // );
-
-      NotificationService.notifyExpiryOneDayBefore(newFood);
       notifyListeners();
     } catch (e) {
       _errorMessage = e.toString();

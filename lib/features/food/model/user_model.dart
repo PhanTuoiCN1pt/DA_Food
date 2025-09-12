@@ -5,6 +5,7 @@ class UserModel {
   String name;
   String email;
   String password;
+  String? fcmToken;
   List<CartItem> cart;
 
   UserModel({
@@ -12,6 +13,7 @@ class UserModel {
     required this.name,
     required this.email,
     required this.password,
+    this.fcmToken,
     this.cart = const [],
   });
 
@@ -21,6 +23,7 @@ class UserModel {
       name: json['name'] ?? "",
       email: json['email'] ?? "",
       password: json['password'] ?? "",
+      fcmToken: json['fcmToken'],
       cart: (json['cart'] as List<dynamic>? ?? [])
           .map((e) => CartItem.fromJson(e))
           .toList(),
@@ -33,6 +36,7 @@ class UserModel {
       "name": name,
       "email": email,
       "password": password,
+      "fcmToken": fcmToken,
       "cart": cart.map((e) => e.toJson()).toList(),
     };
   }

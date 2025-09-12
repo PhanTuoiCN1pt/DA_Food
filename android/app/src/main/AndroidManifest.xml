@@ -1,5 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Permission phải đặt ở đây -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- Required to reschedule notifications after device restart -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <!-- Required for notification vibration -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <application
+
         android:label="da_food"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
@@ -30,6 +44,13 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
+
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" android:exported="false"/>
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" android:exported="false"/>
+        <receiver android:name="com.dexterous.flutterlocalnotifications.NotificationBroadcastReceiver" android:exported="false"/>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

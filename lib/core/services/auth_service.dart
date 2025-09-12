@@ -15,6 +15,7 @@ class AuthService {
     required BuildContext context,
     required String email,
     required String password,
+    required String fcmToken, // 👈 Thêm fcmToken khi login
     required VoidCallback onSuccess,
   }) async {
     if (email.isEmpty || password.isEmpty) {
@@ -29,12 +30,16 @@ class AuthService {
       final response = await http.post(
         Uri.parse("$baseUrl/login"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({'email': email, 'password': password}),
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+          'fcmToken': fcmToken, // 👈 gửi token lên server
+        }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        await _saveUserLogin(data);
+        await _saveUserLogin(data, fcmToken);
         onSuccess();
 
         Loaders.successSnackBar(
@@ -61,13 +66,19 @@ class AuthService {
     required String name,
     required String email,
     required String password,
+    required String? fcmToken,
     required VoidCallback onSuccess,
   }) async {
     try {
       final response = await http.post(
         Uri.parse("$baseUrl/register"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"name": name, "email": email, "password": password}),
+        body: jsonEncode({
+          "name": name,
+          "email": email,
+          "password": password,
+          "fcmToken": fcmToken, // 👈 gửi lên
+        }),
       );
 
       debugPrint("STATUS CODE: ${response.statusCode}");
@@ -213,10 +224,18 @@ class AuthService {
   }
 
   /// -------------------- SAVE USER DATA --------------------
-  static Future<void> _saveUserLogin(Map<String, dynamic> loginData) async {
+  static Future<void> _saveUserLogin(
+    Map<String, dynamic> loginData,
+    String fcmToken,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', loginData['token']);
     await prefs.setString('userId', loginData['user']['id']);
+    await prefs.setString(
+      'fcmToken',
+      fcmToken,
+    ); // 👈 Lưu fcmToken để backend có thể lấy
     debugPrint("USER ID SAVED: ${prefs.getString('userId')}");
+    debugPrint("FCM TOKEN SAVED: ${prefs.getString('fcmToken')}");
   }
 }

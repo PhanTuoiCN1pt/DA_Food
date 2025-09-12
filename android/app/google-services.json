@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "625461336639",
+    "project_id": "foodai-96b3a",
+    "storage_bucket": "foodai-96b3a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625461336639:android:9f453d8bff010feeb8b68a",
+        "android_client_info": {
+          "package_name": "com.example.da_food"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD-3mBcqZPDTmwldQ13Lc6-T6leK2Sgb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625461336639:android:ea0e0079a6c177b7b8b68a",
+        "android_client_info": {
+          "package_name": "com.ptuoi.da_food"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD-3mBcqZPDTmwldQ13Lc6-T6leK2Sgb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

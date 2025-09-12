@@ -4,10 +4,11 @@ import 'package:da_food/features/user/view/widget/constants.dart';
 import 'package:da_food/features/user/view/widget/login_form.dart';
 import 'package:da_food/features/user/view/widget/signup_form.dart';
 import 'package:da_food/features/user/view/widget/social_btn.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../../core/services/auth_service.dart';
+import '../../../core/services/notification_firebse.dart';
 import 'loading_screen.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -19,6 +20,8 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
+  NotificationFirebase notificationFirebase = NotificationFirebase();
+
   bool _isShowSignUp = false;
 
   late AnimationController _animationController;
@@ -63,6 +66,12 @@ class _AuthScreenState extends State<AuthScreen>
   void initState() {
     setUpAnimation();
     super.initState();
+    notificationFirebase.requestNotificationPermission();
+    notificationFirebase.firebaseInit();
+    // notificationFirebase.isTokenRefresh();
+    notificationFirebase.getDeviceToken().then((value) {
+      print('device token: $value');
+    });
   }
 
   @override
@@ -152,27 +161,27 @@ class _AuthScreenState extends State<AuthScreen>
                 ),
 
                 // Logo
-                AnimatedPositioned(
-                  duration: defaultDuration,
-                  top: _size.height * 0.06,
-                  left: 0,
-                  right: _isShowSignUp
-                      ? -_size.width * 0.06
-                      : _size.width * 0.06,
-                  child: _isShowSignUp
-                      ? Lottie.asset(
-                          "assets/animations/Green Login.json",
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.contain,
-                        )
-                      : Lottie.asset(
-                          "assets/animations/j28uCA3Jg9.json",
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.contain,
-                        ),
-                ),
+                // AnimatedPositioned(
+                //   duration: defaultDuration,
+                //   top: _size.height * 0.06,
+                //   left: 0,
+                //   right: _isShowSignUp
+                //       ? -_size.width * 0.06
+                //       : _size.width * 0.06,
+                //   child: _isShowSignUp
+                //       ? Lottie.asset(
+                //           "assets/animations/Green Login.json",
+                //           width: 200,
+                //           height: 200,
+                //           fit: BoxFit.contain,
+                //         )
+                //       : Lottie.asset(
+                //           "assets/animations/j28uCA3Jg9.json",
+                //           width: 200,
+                //           height: 200,
+                //           fit: BoxFit.contain,
+                //         ),
+                // ),
 
                 // Btn social
                 AnimatedPositioned(
@@ -205,14 +214,17 @@ class _AuthScreenState extends State<AuthScreen>
                       alignment: Alignment.topLeft,
                       child: GestureDetector(
                         // Login button
-                        onTap: () {
+                        onTap: () async {
                           if (_isShowSignUp) updateView();
 
                           if (_formKey.currentState!.validate()) {
+                            final fcmToken = await FirebaseMessaging.instance
+                                .getToken();
                             AuthService.login(
                               context: context,
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
+                              fcmToken: fcmToken.toString(),
                               onSuccess: () {
                                 Navigator.pushReplacement(
                                   context,
@@ -265,15 +277,17 @@ class _AuthScreenState extends State<AuthScreen>
                       alignment: Alignment.topRight,
                       child: GestureDetector(
                         // Register button
-                        onTap: () {
-                          if (!_isShowSignUp) updateView();
-
+                        onTap: () async {
                           if (_signupKey.currentState!.validate()) {
+                            final fcmToken = await FirebaseMessaging.instance
+                                .getToken();
+
                             AuthService.register(
                               context: context,
                               name: nameController.text.trim(),
                               email: signupEmailController.text.trim(),
                               password: signupPasswordController.text.trim(),
+                              fcmToken: fcmToken, // 👈 truyền vào
                               onSuccess: () {
                                 setState(() {
                                   _isShowSignUp = false;

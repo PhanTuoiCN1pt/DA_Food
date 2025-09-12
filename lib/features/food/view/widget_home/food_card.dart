@@ -19,6 +19,12 @@ class FoodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Xác định text và màu nền theo daysLeft
+    final bool isExpired = daysLeft <= 0;
+    final String dayText = isExpired ? "D+${daysLeft.abs()}" : "D-$daysLeft";
+    final Color bgColor = isExpired ? Colors.red : TColors.grey;
+    final Color textColor = isExpired ? Colors.white : Colors.black;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -49,16 +55,16 @@ class FoodCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         decoration: BoxDecoration(
-                          color: TColors.grey,
+                          color: bgColor,
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(color: Colors.grey.shade400),
                         ),
                         child: Text(
-                          "D-$daysLeft",
-                          style: const TextStyle(
+                          dayText,
+                          style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: textColor,
                           ),
                         ),
                       ),
