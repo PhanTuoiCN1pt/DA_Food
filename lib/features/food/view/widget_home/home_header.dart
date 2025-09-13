@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/user_model.dart';
 import '../food_search_screen.dart';
+import '../setting_screen.dart';
 import '../widget/rounded_underline_indicator.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -89,7 +90,15 @@ class HomeHeader extends StatelessWidget {
                   ),
                   IconButton(
                     padding: EdgeInsets.zero,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SettingScreen(name: username, email: user!.email),
+                        ),
+                      );
+                    },
                     icon: Image.asset(
                       "assets/icons/icon_app/three-dots.png",
                       width: 30,
