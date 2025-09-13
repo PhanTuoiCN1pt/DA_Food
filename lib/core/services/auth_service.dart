@@ -16,6 +16,7 @@ class AuthService {
     required String email,
     required String password,
     required String fcmToken, // 👈 Thêm fcmToken khi login
+
     required VoidCallback onSuccess,
   }) async {
     if (email.isEmpty || password.isEmpty) {
@@ -231,10 +232,7 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', loginData['token']);
     await prefs.setString('userId', loginData['user']['id']);
-    await prefs.setString(
-      'fcmToken',
-      fcmToken,
-    ); // 👈 Lưu fcmToken để backend có thể lấy
+    await prefs.setString('fcmToken', fcmToken);
     debugPrint("USER ID SAVED: ${prefs.getString('userId')}");
     debugPrint("FCM TOKEN SAVED: ${prefs.getString('fcmToken')}");
   }

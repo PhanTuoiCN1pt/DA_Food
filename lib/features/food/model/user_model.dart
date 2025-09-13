@@ -6,6 +6,7 @@ class UserModel {
   String email;
   String password;
   String? fcmToken;
+  DateTime? lastLogin;
   List<CartItem> cart;
 
   UserModel({
@@ -14,6 +15,7 @@ class UserModel {
     required this.email,
     required this.password,
     this.fcmToken,
+    this.lastLogin,
     this.cart = const [],
   });
 
@@ -24,6 +26,9 @@ class UserModel {
       email: json['email'] ?? "",
       password: json['password'] ?? "",
       fcmToken: json['fcmToken'],
+      lastLogin: json['lastLogin'] != null
+          ? DateTime.tryParse(json['lastLogin'])
+          : null,
       cart: (json['cart'] as List<dynamic>? ?? [])
           .map((e) => CartItem.fromJson(e))
           .toList(),
@@ -37,6 +42,7 @@ class UserModel {
       "email": email,
       "password": password,
       "fcmToken": fcmToken,
+      "lastLogin": lastLogin?.toIso8601String(),
       "cart": cart.map((e) => e.toJson()).toList(),
     };
   }

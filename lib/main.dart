@@ -11,6 +11,7 @@ import 'features/category/view/category_screen.dart';
 import 'features/food/view/home_screen.dart';
 import 'features/food/view_model/tab_provider.dart';
 import 'features/user/view/auth_screen.dart';
+import 'features/user/view/splash_screen.dart';
 import 'features/user/view/widget/constants.dart';
 
 void main() async {
@@ -52,14 +53,14 @@ class MyApp extends StatelessWidget {
           filled: true,
           fillColor: Colors.white38,
           border: InputBorder.none,
-          hintStyle: TextStyle(color: Colors.white),
-          contentPadding: EdgeInsets.symmetric(
+          hintStyle: const TextStyle(color: Colors.white),
+          contentPadding: const EdgeInsets.symmetric(
             vertical: defpaultPadding * 1.2,
             horizontal: defpaultPadding,
           ),
         ),
       ),
-      home: AuthScreen(),
+      home: const SplashScreen(),
       routes: {
         '/category': (context) => CategoryScreen(),
         '/home': (context) => HomeScreen(),

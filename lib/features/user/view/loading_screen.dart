@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -13,6 +14,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void initState() {
     super.initState();
     _prepareResources();
+    checkLogin();
   }
 
   Future<void> _prepareResources() async {
@@ -20,6 +22,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
     if (mounted) {
       Navigator.pushReplacementNamed(context, '/home');
+    }
+  }
+
+  Future<void> checkLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    await Future.delayed(const Duration(seconds: 2)); // ⏳ Hiệu ứng splash
+
+    if (token != null && token.isNotEmpty) {
+      // ✅ Có token → tự động vào Home
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      // ❌ Chưa có token → vào Login
+      Navigator.pushReplacementNamed(context, '/auth');
     }
   }
 

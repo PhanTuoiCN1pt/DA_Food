@@ -287,7 +287,7 @@ class _AuthScreenState extends State<AuthScreen>
                               name: nameController.text.trim(),
                               email: signupEmailController.text.trim(),
                               password: signupPasswordController.text.trim(),
-                              fcmToken: fcmToken, // 👈 truyền vào
+                              fcmToken: fcmToken,
                               onSuccess: () {
                                 setState(() {
                                   _isShowSignUp = false;
