@@ -47,8 +47,11 @@ class SettingScreen extends StatelessWidget {
 
   Widget _buildMenuItem(String iconPath, String title, VoidCallback onTap) {
     return ListTile(
-      leading: Image.asset(iconPath, width: 24, height: 24),
-      title: Text(title, style: const TextStyle(fontSize: 16)),
+      leading: Image.asset(iconPath, width: 30, height: 30),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
       onTap: onTap,
     );
   }
@@ -61,7 +64,11 @@ class SettingScreen extends StatelessWidget {
           // Header User Info
           Container(
             decoration: BoxDecoration(
-              color: Colors.teal,
+              gradient: LinearGradient(
+                colors: [Colors.blue, Colors.purple],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(24),
                 bottomRight: Radius.circular(24),
@@ -146,8 +153,8 @@ class SettingScreen extends StatelessWidget {
                       ),
                       child: Image.asset(
                         "assets/icons/icon_app/settings.png",
-                        width: 24,
-                        height: 24,
+                        width: 30,
+                        height: 30,
                       ),
                     ),
                   ],
@@ -217,7 +224,10 @@ class SettingScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () => _confirmLogout(context),
-              child: const Text("Đăng xuất"),
+              child: const Text(
+                "Đăng xuất",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
             ),
           ),
         ],
