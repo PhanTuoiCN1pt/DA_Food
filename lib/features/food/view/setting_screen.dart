@@ -1,3 +1,4 @@
+import 'package:da_food/features/food/view/setting_notification.dart';
 import 'package:da_food/helper/divider_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -169,7 +170,14 @@ class SettingScreen extends StatelessWidget {
                 _buildMenuItem(
                   "assets/icons/icon_app/informative.png",
                   "Thông báo",
-                  () {},
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NotificationSettingScreen(),
+                      ),
+                    );
+                  },
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16, right: 16),
