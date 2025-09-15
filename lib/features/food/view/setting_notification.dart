@@ -127,7 +127,10 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Thông báo")),
+      appBar: AppBar(
+        title: Text("Thông báo", style: TextStyle(fontWeight: FontWeight.bold)),
+        titleSpacing: 0,
+      ),
       body: ListView(
         children: [
           SwitchListTile(

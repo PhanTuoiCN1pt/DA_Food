@@ -1,3 +1,4 @@
+import 'package:da_food/features/food/model/user_model.dart';
 import 'package:da_food/features/food/view/setting_notification.dart';
 import 'package:da_food/helper/divider_helper.dart';
 import 'package:flutter/material.dart';
@@ -6,14 +7,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../user/view/auth_screen.dart';
 
 class SettingScreen extends StatelessWidget {
-  final String name;
-  final String email;
+  final UserModel user; // ✅ nhận trực tiếp user
 
-  const SettingScreen({super.key, required this.name, required this.email});
+  const SettingScreen({super.key, required this.user});
 
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
+    await prefs.remove('userId');
 
     Navigator.pushAndRemoveUntil(
       context,
@@ -42,7 +43,7 @@ class SettingScreen extends StatelessWidget {
     );
 
     if (shouldLogout ?? false) {
-      _logout(context); // Gọi hàm logout hiện tại
+      _logout(context);
     }
   }
 
@@ -64,13 +65,13 @@ class SettingScreen extends StatelessWidget {
         children: [
           // Header User Info
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.blue, Colors.purple],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(24),
                 bottomRight: Radius.circular(24),
               ),
@@ -78,19 +79,18 @@ class SettingScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Row chứa back button + "Cài đặt"
+                // Back button + title
                 Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 40.0),
+                      padding: const EdgeInsets.only(top: 40.0),
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ),
-
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 40.0),
                       child: Text(
                         "Cài đặt",
                         style: TextStyle(
@@ -102,18 +102,20 @@ class SettingScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-                // Row chứa avatar + tên + email + setting
+                // Avatar + name + email + icon
                 Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: 20.0, bottom: 20),
+                      padding: const EdgeInsets.only(left: 20.0, bottom: 20),
                       child: CircleAvatar(
                         radius: 28,
                         backgroundColor: Colors.white,
                         child: Text(
-                          name.isNotEmpty ? name[0].toUpperCase() : "?",
+                          user.name.isNotEmpty
+                              ? user.name[0].toUpperCase()
+                              : "?",
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -122,7 +124,7 @@ class SettingScreen extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         left: 20.0,
                         right: 20,
                         bottom: 20,
@@ -131,7 +133,7 @@ class SettingScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            name,
+                            user.name,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -139,7 +141,7 @@ class SettingScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            email,
+                            user.email,
                             style: const TextStyle(color: Colors.white70),
                           ),
                         ],
@@ -147,11 +149,7 @@ class SettingScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20.0,
-                        right: 20,
-                        bottom: 20,
-                      ),
+                      padding: const EdgeInsets.only(right: 20, bottom: 20),
                       child: Image.asset(
                         "assets/icons/icon_app/settings.png",
                         width: 30,
@@ -164,6 +162,7 @@ class SettingScreen extends StatelessWidget {
             ),
           ),
 
+          // Body menu
           Expanded(
             child: ListView(
               children: [
@@ -174,42 +173,42 @@ class SettingScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NotificationSettingScreen(),
+                        builder: (context) => const NotificationSettingScreen(),
                       ),
                     );
                   },
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: DashedDivider(dashSpace: 0, color: Colors.grey),
-                ), // Divider thường
+                ),
                 _buildMenuItem(
                   "assets/icons/icon_app/handshake.png",
                   "Các điều khoản và điều kiện",
                   () {},
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: DashedDivider(dashSpace: 0, color: Colors.grey),
-                ), // Divid
+                ),
                 _buildMenuItem(
                   "assets/icons/icon_app/licensing.png",
                   "Giấy phép ứng dụng",
                   () {},
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: DashedDivider(dashSpace: 0, color: Colors.grey),
-                ), // Divid
+                ),
                 _buildMenuItem(
                   "assets/icons/icon_app/information.png",
                   "Thông tin ứng dụng",
                   () {},
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: DashedDivider(dashSpace: 0, color: Colors.grey),
-                ), // Divid
+                ),
                 _buildMenuItem(
                   "assets/icons/icon_app/delete-user.png",
                   "Xóa tài khoản",
@@ -219,7 +218,7 @@ class SettingScreen extends StatelessWidget {
             ),
           ),
 
-          // Logout Button
+          // Logout button
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(

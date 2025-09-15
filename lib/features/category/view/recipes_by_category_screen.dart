@@ -2,6 +2,7 @@ import 'package:da_food/features/category/view/recipe_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/services/recipe_service.dart';
+import '../../food/model/recipe_model.dart';
 
 class RecipesByCategoryScreen extends StatefulWidget {
   final String category;
@@ -14,7 +15,7 @@ class RecipesByCategoryScreen extends StatefulWidget {
 }
 
 class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
-  List<Map<String, dynamic>> recipes = [];
+  List<RecipeModel> recipes = [];
   bool isLoading = false;
 
   @override
@@ -59,11 +60,11 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
                 return Card(
                   child: ListTile(
                     title: Text(
-                      recipe["name"] ?? "Không có tên",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      recipe.name ?? "Không có tên",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      "Nguyên liệu: ${recipe["ingredients"]?.length ?? 0}",
+                      "Nguyên liệu: ${recipe.ingredients?.length ?? 0}",
                     ),
                     onTap: () {
                       Navigator.push(
@@ -77,12 +78,12 @@ class _RecipesByCategoryScreenState extends State<RecipesByCategoryScreen> {
                       onPressed: () async {
                         try {
                           final result = await RecipeService.addToKitchen(
-                            recipe["_id"],
+                            recipe.id!,
                           );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                "${result["recipe"]["name"]} đã được thêm vào Nhà bếp!",
+                                "${result.name} đã được thêm vào Nhà bếp!",
                               ),
                             ),
                           );

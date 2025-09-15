@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/services/food_service.dart';
+import '../../../core/services/recipe_service.dart';
 import '../../../core/services/user_service.dart';
 import '../../../helper/color_helper.dart';
 import '../../food/model/food_model.dart';
+import '../model/recipe_model.dart';
 import '../model/user_model.dart';
 import 'meal_suggestions_screen.dart';
 
@@ -21,9 +23,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<FoodItem> _kitchenFoods = [];
   List<FoodItem> _fridgeFoods = [];
   List<FoodItem> _freezerFoods = [];
+  List<RecipeModel> _recipes = [];
+
   bool _loading = true;
   UserModel? user;
 
@@ -35,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen>
     _tabController = TabController(length: labels.length, vsync: this);
     loadUser();
     loadFoods();
+    loadKitchen();
   }
 
   Future<void> loadUser() async {
@@ -42,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen>
     final userId = prefs.getString("userId") ?? "";
     if (userId.isNotEmpty) {
       try {
-        final fetchedUser = await UserServer.fetchUserById(userId);
+        final fetchedUser = await UserService.fetchUserById(userId);
         setState(() => user = fetchedUser);
       } catch (e) {
         debugPrint("Error fetching user: $e");
@@ -56,11 +60,23 @@ class _HomeScreenState extends State<HomeScreen>
       setState(() {
         _fridgeFoods = foods.where((f) => f.location == "Tủ lạnh").toList();
         _freezerFoods = foods.where((f) => f.location == "Tủ đông").toList();
-        _kitchenFoods = foods.where((f) => f.location == "Nhà bếp").toList();
         _loading = false;
       });
     } catch (e) {
       debugPrint("Lỗi load foods: $e");
+      setState(() => _loading = false);
+    }
+  }
+
+  Future<void> loadKitchen() async {
+    try {
+      final recipes = await RecipeService.getKitchenRecipes();
+      setState(() {
+        _recipes = recipes;
+        _loading = false;
+      });
+    } catch (e) {
+      debugPrint("Lỗi load kitchen: $e");
       setState(() => _loading = false);
     }
   }
@@ -76,7 +92,6 @@ class _HomeScreenState extends State<HomeScreen>
               //  Header chung
               HomeHeader(
                 tabController: _tabController,
-                username: user?.name ?? "Đang tải...",
                 labels: labels,
                 user: user,
               ),
@@ -105,7 +120,10 @@ class _HomeScreenState extends State<HomeScreen>
                               foods: _freezerFoods,
                               onReload: loadFoods,
                             ),
-                            KitchenTab(foods: _kitchenFoods),
+                            KitchenTab(
+                              onReload: loadKitchen,
+                              recipes: _recipes,
+                            ),
                           ],
                         ),
                 ),
@@ -160,7 +178,8 @@ class _HomeScreenState extends State<HomeScreen>
           icon: const Icon(Icons.add, color: Colors.white, size: 28),
           onPressed: () {
             Navigator.pushNamed(context, '/category').then((_) {
-              loadFoods(); // reload sau khi pop
+              loadFoods();
+              loadKitchen(); // reload sau khi pop
             });
           },
         ),

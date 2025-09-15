@@ -26,7 +26,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Future<UserModel> _reloadUser() async {
-    return await UserServer.fetchUserById(widget.userId);
+    return await UserService.fetchUserById(widget.userId);
   }
 
   void _showAddItemDialog() {

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../connect/api_url.dart';
 import '../../features/food/model/user_model.dart';
 
-class UserServer {
+class UserService {
   static final String baseUrl = "$apiUrl/api/users";
 
   // Lấy tất cả user

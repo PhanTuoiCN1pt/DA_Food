@@ -1,12 +1,12 @@
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:da_food/features/food/view_model/food_provider.dart';
-import 'package:da_food/features/food/view_model/recipe_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import 'core/services/notification_service.dart';
 import 'features/category/view/category_screen.dart';
 import 'features/food/view/home_screen.dart';
 import 'features/food/view_model/tab_provider.dart';
@@ -20,13 +20,29 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+  // Khởi tạo NotificationService
+  final notificationService = NotificationService();
+  await notificationService.initNotification();
+
+  // 🔹 Lắng nghe FCM khi app foreground
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    final notification = message.notification;
+    if (notification != null) {
+      notificationService.showNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title: notification.title,
+        body: notification.body,
+      );
+    }
+  });
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TabProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => FoodProvider()),
-        ChangeNotifierProvider(create: (_) => RecipeProvider()),
+        // ChangeNotifierProvider(create: (_) => RecipeProvider()),
       ],
       // child: DevicePreview(enabled: true, builder: (context) => MyApp()),
       child: MyApp(),

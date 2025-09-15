@@ -9,14 +9,14 @@ import '../widget/rounded_underline_indicator.dart';
 
 class HomeHeader extends StatelessWidget {
   final TabController tabController;
-  final String username;
+  // final String username;
   final List<String> labels;
   final UserModel? user;
 
   const HomeHeader({
     super.key,
     required this.tabController,
-    required this.username,
+    // required this.username,
     required this.labels,
     this.user,
   });
@@ -44,7 +44,7 @@ class HomeHeader extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(left: 16.0),
                   child: Text(
-                    "Food AI x $username",
+                    "Food AI",
                     style: GoogleFonts.oswald(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -98,8 +98,7 @@ class HomeHeader extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          SettingScreen(name: username, email: user!.email),
+                      builder: (context) => SettingScreen(user: user!),
                     ),
                   );
                 },

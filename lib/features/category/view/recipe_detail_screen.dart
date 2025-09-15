@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
+import '../../food/model/recipe_model.dart';
+
 class RecipeDetailScreen extends StatelessWidget {
-  final Map<String, dynamic> recipe;
+  final RecipeModel recipe;
 
   const RecipeDetailScreen({super.key, required this.recipe});
 
   @override
   Widget build(BuildContext context) {
-    final ingredients = List<Map<String, dynamic>>.from(
-      recipe["ingredients"] ?? [],
-    );
-    final instructions = List<String>.from(recipe["instructions"] ?? []);
+    final ingredients = recipe.ingredients;
+    final instructions = recipe.instructions;
 
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
         title: Text(
-          recipe["name"] ?? "Chi tiết món ăn",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          recipe.name.isNotEmpty ? recipe.name : "Chi tiết món ăn",
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -34,7 +34,7 @@ class RecipeDetailScreen extends StatelessWidget {
             ...ingredients.map(
               (item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Text("- ${item["name"]} : ${item["quantity"]}"),
+                child: Text("- ${item.name} : ${item.quantity}"),
               ),
             ),
 
