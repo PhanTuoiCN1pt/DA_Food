@@ -2,26 +2,14 @@ import 'package:da_food/features/food/model/user_model.dart';
 import 'package:da_food/features/food/view/setting_notification.dart';
 import 'package:da_food/helper/divider_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/auth_service.dart';
 import '../../user/view/auth_screen.dart';
 
 class SettingScreen extends StatelessWidget {
-  final UserModel user; // ✅ nhận trực tiếp user
+  final UserModel user;
 
   const SettingScreen({super.key, required this.user});
-
-  Future<void> _logout(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('token');
-    await prefs.remove('userId');
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const AuthScreen()),
-      (route) => false,
-    );
-  }
 
   Future<void> _confirmLogout(BuildContext context) async {
     final shouldLogout = await showDialog<bool>(
@@ -43,7 +31,18 @@ class SettingScreen extends StatelessWidget {
     );
 
     if (shouldLogout ?? false) {
-      _logout(context);
+      // 👇 gọi service logout
+      await AuthService.logout(
+        context,
+        onSuccess: () {
+          // Sau khi xoá dữ liệu, điều hướng về AuthScreen
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const AuthScreen()),
+            (route) => false,
+          );
+        },
+      );
     }
   }
 

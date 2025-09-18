@@ -9,6 +9,9 @@ class UserModel {
   DateTime? lastLogin;
   List<CartItem> cart;
 
+  // 👇 thêm trường notifyTime (dạng HH:mm)
+  String? notifyTime;
+
   UserModel({
     this.id,
     required this.name,
@@ -17,6 +20,7 @@ class UserModel {
     this.fcmToken,
     this.lastLogin,
     this.cart = const [],
+    this.notifyTime, // thêm vào constructor
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,7 @@ class UserModel {
       cart: (json['cart'] as List<dynamic>? ?? [])
           .map((e) => CartItem.fromJson(e))
           .toList(),
+      notifyTime: json['notifyTime'], // 👈 map từ backend
     );
   }
 
@@ -44,6 +49,7 @@ class UserModel {
       "fcmToken": fcmToken,
       "lastLogin": lastLogin?.toIso8601String(),
       "cart": cart.map((e) => e.toJson()).toList(),
+      "notifyTime": notifyTime, // 👈 gửi về server
     };
   }
 }

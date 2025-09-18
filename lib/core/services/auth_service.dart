@@ -61,6 +61,52 @@ class AuthService {
     }
   }
 
+  /// -------------------- LOGOUT --------------------
+  static Future<void> logout(
+    BuildContext context, {
+    VoidCallback? onSuccess,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("token");
+
+      // 🔹 Gọi API logout để server xoá fcmToken trong DB
+      final response = await http.post(
+        Uri.parse("$baseUrl/logout"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Xoá tất cả dữ liệu login (token, userId, fcmToken) ở local
+        await prefs.remove("token");
+        await prefs.remove("userId");
+        await prefs.remove("fcmToken");
+
+        debugPrint("✅ Đã xoá token, userId và fcmToken khi logout");
+
+        Loaders.successSnackBar(
+          title: "Đăng xuất",
+          message: "Bạn đã đăng xuất thành công!",
+        );
+
+        if (onSuccess != null) onSuccess();
+      } else {
+        Loaders.errorSnackBar(
+          title: "Thất bại",
+          message: "Không thể logout: ${response.body}",
+        );
+      }
+    } catch (e) {
+      Loaders.errorSnackBar(
+        title: "Lỗi",
+        message: "Không thể kết nối server: $e",
+      );
+    }
+  }
+
   /// -------------------- REGISTER --------------------
   static Future<void> register({
     required BuildContext context,

@@ -22,4 +22,22 @@ class CategoryService {
       throw Exception("Error: $e");
     }
   }
+
+  // 🔍 Tìm subcategory theo label
+  Future<List<SubCategory>> searchSubCategories(String keyword) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/searchBySubCategory?keyword=$keyword"),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((e) => SubCategory.fromJson(e)).toList();
+      } else {
+        throw Exception("Failed to search subcategories");
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
+  }
 }

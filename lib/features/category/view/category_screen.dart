@@ -1,4 +1,5 @@
 import 'package:da_food/features/category/view/recipes_by_category_screen.dart';
+import 'package:da_food/features/category/view/search_subcategory_screen.dart';
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -98,11 +99,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
           "Thể loại",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        actions: const [
-          Icon(Icons.search),
-          SizedBox(width: 8),
-          Icon(Icons.more_vert),
-          SizedBox(width: 8),
+        actions: [
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => SearchSubCategoryScreen()),
+              );
+            },
+            icon: Icon(Icons.search),
+          ),
+          const SizedBox(width: 8),
+          const Icon(Icons.more_vert),
+          const SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
@@ -206,7 +217,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     if (index == mealCategories.length) {
                       return InkWell(
                         onTap: () {
-                          debugPrint("👉 Thêm món ăn mới");
+                          debugPrint("Thêm món ăn mới");
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -233,7 +244,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => RecipesByCategoryScreen(
+                              builder: (_) => RecipesBySubCategoryScreen(
                                 category: subItem["label"],
                               ),
                             ),

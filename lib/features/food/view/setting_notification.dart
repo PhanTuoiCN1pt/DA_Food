@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:da_food/core/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,14 +29,25 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserId();
+    _loadUserAndTime();
   }
 
-  Future<void> _loadUserId() async {
+  Future<void> _loadUserAndTime() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getString("userId");
-    });
+    final id = prefs.getString("userId");
+    if (id == null) return;
+
+    try {
+      final user = await UserService.fetchUserById(id);
+
+      setState(() {
+        userId = user.id;
+        notifyTimeApi = user.notifyTime; // ví dụ field notifyTime trong user
+        notifyTimeDisplay = user.notifyTime ?? "Chưa chọn giờ";
+      });
+    } catch (e) {
+      debugPrint("❌ Lỗi lấy user: $e");
+    }
   }
 
   // Gọi API lưu notifyTime (apiTime: "HH:mm", display: hiển thị)

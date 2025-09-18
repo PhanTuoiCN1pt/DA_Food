@@ -1,31 +1,34 @@
-import 'package:da_food/features/food/view_model/food_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-import '../../../core/services/food_service.dart';
-import '../../../helper/food_icon_helper.dart';
-import '../../category/view/food_edit_screen.dart';
-import '../model/food_model.dart';
+import '../../../core/services/category_service.dart';
+import '../../food/model/category_model.dart';
+import 'food_detail_screen.dart';
 
-class FoodSearchScreen extends StatefulWidget {
-  const FoodSearchScreen({super.key});
+class SearchSubCategoryScreen extends StatefulWidget {
+  const SearchSubCategoryScreen({super.key});
 
   @override
-  State<FoodSearchScreen> createState() => _FoodSearchScreenState();
+  State<SearchSubCategoryScreen> createState() =>
+      _SearchSubCategoryScreenState();
 }
 
-class _FoodSearchScreenState extends State<FoodSearchScreen> {
+class _SearchSubCategoryScreenState extends State<SearchSubCategoryScreen> {
   final TextEditingController _controller = TextEditingController();
-  List<FoodItem> _results = [];
+  List<SubCategory> _results = [];
   bool _loading = false;
 
   Future<void> _search(String keyword) async {
+    if (keyword.isEmpty) {
+      setState(() => _results.clear());
+      return;
+    }
+
     setState(() => _loading = true);
     try {
-      final foods = await FoodService.searchFoods(keyword);
+      final subs = await CategoryService().searchSubCategories(keyword);
       setState(() {
-        _results = foods;
+        _results = subs;
       });
     } catch (e) {
       debugPrint("Search error: $e");
@@ -35,7 +38,6 @@ class _FoodSearchScreenState extends State<FoodSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FoodProvider>(context, listen: false);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -53,7 +55,7 @@ class _FoodSearchScreenState extends State<FoodSearchScreen> {
                     controller: _controller,
                     autofocus: true,
                     decoration: InputDecoration(
-                      hintText: "Tìm kiếm thực phẩm...",
+                      hintText: "Tìm kiếm subcategory...",
                       border: InputBorder.none,
                       hintStyle: GoogleFonts.roboto(fontSize: 16),
                     ),
@@ -79,47 +81,39 @@ class _FoodSearchScreenState extends State<FoodSearchScreen> {
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
+          : _results.isEmpty
+          ? const Center(child: Text("Nhập tên thực phẩm để tìm kiếm"))
           : ListView.builder(
               itemCount: _results.length,
               itemBuilder: (context, index) {
-                final food = _results[index];
+                final sub = _results[index];
                 return ListTile(
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 4,
                   ),
-                  leading: Image.asset(
-                    FoodIconHelper.getIconByName(food.name),
-                    width: 40,
-                    height: 40,
-                  ),
+                  leading: sub.icon.isNotEmpty
+                      ? Image.asset(sub.icon, width: 40, height: 40)
+                      : const Icon(Icons.category),
                   title: Text(
-                    food.name,
+                    sub.label,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  trailing: Text(
-                    food.location,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.blue.shade700,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  subtitle: Text(
+                    sub.category,
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                   ),
                   onTap: () {
-                    final provider = Provider.of<FoodProvider>(
-                      context,
-                      listen: false,
-                    );
-                    provider.initFoodFromItem(food); //  Set food vào provider
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            FoodEditScreen(food: food), // vẫn truyền vào screen
+                        builder: (_) => FoodDetailScreen(
+                          category: sub.category,
+                          subCategory: sub.label,
+                        ),
                       ),
                     );
                   },

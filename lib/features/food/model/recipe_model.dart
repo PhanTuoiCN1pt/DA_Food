@@ -4,6 +4,9 @@ class RecipeModel {
   List<Ingredient> ingredients;
   List<String> instructions;
   String category;
+  String? subCategory;
+  String? location;
+  String? image;
   DateTime? createdAt;
 
   RecipeModel({
@@ -12,6 +15,9 @@ class RecipeModel {
     required this.ingredients,
     required this.instructions,
     required this.category,
+    this.subCategory,
+    this.location,
+    this.image,
     this.createdAt,
   });
 
@@ -20,6 +26,9 @@ class RecipeModel {
       id: json['_id']?.toString(),
       name: json['name'] ?? '',
       category: json['category'] ?? '',
+      subCategory: json['subCategory'],
+      location: json['location'],
+      image: json['image'],
       ingredients: (json['ingredients'] as List<dynamic>? ?? [])
           .map((e) => Ingredient.fromJson(e))
           .toList(),
@@ -37,9 +46,12 @@ class RecipeModel {
       if (id != null) "_id": id,
       "name": name,
       "category": category,
+      if (subCategory != null) "subCategory": subCategory,
+      if (location != null) "location": location,
+      if (image != null) "image": image,
       "ingredients": ingredients.map((e) => e.toJson()).toList(),
       "instructions": instructions,
-      "createdAt": createdAt?.toIso8601String(),
+      if (createdAt != null) "createdAt": createdAt!.toIso8601String(),
     };
   }
 }

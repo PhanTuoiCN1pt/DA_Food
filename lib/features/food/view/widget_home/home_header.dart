@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/user_model.dart';
-import '../food_search_screen.dart';
+import '../search_food_screen.dart';
 import '../setting_screen.dart';
 import '../widget/rounded_underline_indicator.dart';
 
@@ -63,7 +63,7 @@ class HomeHeader extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => FoodSearchScreen()),
+                    MaterialPageRoute(builder: (_) => SearchFoodScreen()),
                   );
                 },
                 icon: Image.asset(
