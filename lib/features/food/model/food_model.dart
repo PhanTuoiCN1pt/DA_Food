@@ -16,7 +16,7 @@ class FoodItem {
     required this.category,
     required this.name,
     this.quantity = 1,
-    this.location = "Tủ lạnh",
+    this.location = "Ngăn lạnh",
     DateTime? registerDate,
     int storageDuration = 7,
     DateTime? expiryDate,
@@ -41,7 +41,7 @@ class FoodItem {
       category: json['category'] ?? '',
       name: json['name'] ?? '',
       quantity: json['quantity'] ?? 1,
-      location: json['location'] ?? 'Tủ lạnh',
+      location: json['location'] ?? 'Ngăn lạnh',
       registerDate: regDate,
       storageDuration: duration,
       expiryDate:

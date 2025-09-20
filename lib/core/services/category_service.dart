@@ -6,7 +6,7 @@ import '../../connect/api_url.dart';
 import '../../features/food/model/category_model.dart';
 
 class CategoryService {
-  final String baseUrl = "$apiUrl/api/categories"; // đổi theo API thật
+  final String baseUrl = "$apiUrl/api/categories";
 
   Future<List<Category>> fetchCategories() async {
     try {

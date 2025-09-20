@@ -35,7 +35,6 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FoodProvider>(context, listen: false);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),

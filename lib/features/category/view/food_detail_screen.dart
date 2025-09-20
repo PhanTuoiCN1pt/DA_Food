@@ -1,3 +1,4 @@
+import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,7 +50,7 @@ class FoodDetailScreen extends StatelessWidget {
           builder: (context, provider, _) => Text(
             provider.food.name,
             style: TextStyle(fontWeight: FontWeight.bold),
-          ), // tên có thể sửa
+          ),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -76,7 +77,7 @@ class FoodDetailScreen extends StatelessWidget {
               }
             },
             icon: Image.asset(
-              "assets/icons/icon_app/add-to-cart.png",
+              "assets/icons/icon_app/e-commerce.png",
               width: 30,
               height: 30,
             ),
@@ -131,17 +132,19 @@ class FoodDetailScreen extends StatelessWidget {
 
                           // Editable Name
                           SizedBox(
-                            width: 200,
-                            child: TextField(
+                            width: 230,
+                            child: AutoSizeTextField(
                               controller: provider.nameController,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                              ),
+                              minFontSize: 14, // nhỏ nhất
+                              maxFontSize: 20, // lớn nhất
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
-                              onChanged: provider.updateName, // cập nhật model
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                              onChanged: provider.updateName,
                             ),
                           ),
                         ],
@@ -178,7 +181,7 @@ class FoodDetailScreen extends StatelessWidget {
                             fillColor: Colors.grey.shade400,
                           ),
                           borderRadius: BorderRadius.circular(12),
-                          items: ["Tủ lạnh", "Tủ đông", "Nhà bếp"]
+                          items: ["Ngăn lạnh", "Ngăn đông"]
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: e,
@@ -193,7 +196,7 @@ class FoodDetailScreen extends StatelessWidget {
                               )
                               .toList(),
                           onChanged: (value) =>
-                              provider.updateLocation(value ?? "Tủ lạnh"),
+                              provider.updateLocation(value ?? "Ngăn lạnh"),
                         ),
                       ),
                     ],

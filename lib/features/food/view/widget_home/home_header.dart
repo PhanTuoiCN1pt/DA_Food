@@ -44,7 +44,7 @@ class HomeHeader extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(left: 16.0),
                   child: Text(
-                    "Food AI",
+                    "Fridge x ${user?.name.toString()}",
                     style: GoogleFonts.oswald(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -86,7 +86,7 @@ class HomeHeader extends StatelessWidget {
                   }
                 },
                 icon: Image.asset(
-                  "assets/icons/icon_app/add-to-cart.png",
+                  "assets/icons/icon_app/e-commerce.png",
                   width: 30,
                   height: 30,
                 ),

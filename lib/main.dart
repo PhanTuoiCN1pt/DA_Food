@@ -1,5 +1,6 @@
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:da_food/features/food/view_model/food_provider.dart';
+import 'package:da_food/features/food/view_model/home_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +41,11 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TabProvider()),
-        ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ChangeNotifierProvider(
+          create: (_) => CategoryProvider()..loadCategories(),
+        ),
         ChangeNotifierProvider(create: (_) => FoodProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
         // ChangeNotifierProvider(create: (_) => RecipeProvider()),
       ],
       // child: DevicePreview(enabled: true, builder: (context) => MyApp()),

@@ -1,35 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../core/services/cart_service.dart';
-import '../../../core/services/user_service.dart';
-import '../model/user_model.dart';
+import '../view_model/cart_provider.dart';
 
-class CartScreen extends StatefulWidget {
+class CartScreen extends StatelessWidget {
   final String userId;
 
   const CartScreen({super.key, required this.userId});
 
-  @override
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
-  late Future<UserModel> _futureUser;
-
-  bool _selectionMode = false;
-  Set<String> _selectedIds = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _futureUser = _reloadUser();
-  }
-
-  Future<UserModel> _reloadUser() async {
-    return await UserService.fetchUserById(widget.userId);
-  }
-
-  void _showAddItemDialog() {
+  void _showAddItemDialog(BuildContext context, CartProvider provider) {
     final TextEditingController controller = TextEditingController();
 
     showDialog(
@@ -52,19 +31,8 @@ class _CartScreenState extends State<CartScreen> {
             onPressed: () async {
               final name = controller.text.trim();
               if (name.isEmpty) return;
-
               Navigator.pop(context);
-
-              try {
-                await CartService.addToCart(name);
-                setState(() {
-                  _futureUser = _reloadUser();
-                });
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Lỗi thêm sản phẩm: $e")),
-                );
-              }
+              await provider.addItem(name);
             },
             child: const Text("Thêm"),
           ),
@@ -73,150 +41,102 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  void _deleteSelected() async {
-    try {
-      await CartService.deleteCartItems(_selectedIds.toList());
-      setState(() {
-        _selectionMode = false;
-        _selectedIds.clear();
-        _futureUser = _reloadUser();
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Lỗi xóa sản phẩm: $e")));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        leading: _selectionMode
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  setState(() {
-                    _selectionMode = false;
-                    _selectedIds.clear();
-                  });
-                },
-              )
-            : null,
-        title: Text(
-          _selectionMode ? "Xóa khỏi giỏ" : "Danh sách mua sắm",
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          if (_selectionMode)
-            IconButton(
-              icon: Image.asset(
-                "assets/icons/icon_app/garbage.png",
-                width: 30,
-                height: 30,
+    return ChangeNotifierProvider(
+      create: (_) => CartProvider(userId),
+      child: Consumer<CartProvider>(
+        builder: (context, provider, child) {
+          final user = provider.user;
+
+          return Scaffold(
+            appBar: AppBar(
+              titleSpacing: 0,
+              leading: provider.selectionMode
+                  ? IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: provider.disableSelection,
+                    )
+                  : null,
+              title: Text(
+                provider.selectionMode ? "Xóa khỏi giỏ" : "Danh sách mua sắm",
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              onPressed: _selectedIds.isEmpty ? null : _deleteSelected,
-            ),
-          SizedBox(width: 10),
-        ],
-      ),
-
-      body: FutureBuilder<UserModel>(
-        future: _futureUser,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text("Lỗi: ${snapshot.error}"));
-          }
-          if (!snapshot.hasData || snapshot.data!.cart.isEmpty) {
-            return const Center(child: Text("Giỏ hàng trống"));
-          }
-
-          final items = snapshot.data!.cart;
-
-          final sortedItems = [...items]
-            ..sort((a, b) {
-              if (a.done == b.done) return 0;
-              return a.done ? 1 : -1;
-            });
-
-          return ListView.separated(
-            itemCount: sortedItems.length,
-            separatorBuilder: (context, index) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final item = sortedItems[index];
-              final isSelected = _selectedIds.contains(item.id);
-
-              return ListTile(
-                leading: _selectionMode
-                    ? Checkbox(
-                        value: isSelected,
-                        onChanged: (checked) {
-                          setState(() {
-                            if (checked == true) {
-                              _selectedIds.add(item.id);
-                            } else {
-                              _selectedIds.remove(item.id);
-                            }
-                          });
-                        },
-                      )
-                    : null,
-                title: Text(
-                  item.foodName,
-                  style: TextStyle(
-                    decoration: item.done
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-                    color: item.done ? Colors.grey : Colors.black,
+              actions: [
+                if (provider.selectionMode)
+                  IconButton(
+                    icon: Image.asset(
+                      "assets/icons/icon_app/garbage.png",
+                      width: 30,
+                      height: 30,
+                    ),
+                    onPressed: provider.selectedIds.isEmpty
+                        ? null
+                        : provider.deleteSelected,
                   ),
-                ),
-                trailing: !_selectionMode
-                    ? const Icon(Icons.expand_more)
-                    : null,
-                onTap: () async {
-                  if (_selectionMode) {
-                    setState(() {
-                      if (isSelected) {
-                        _selectedIds.remove(item.id);
-                      } else {
-                        _selectedIds.add(item.id);
-                      }
-                    });
-                  } else {
-                    final newDone = !item.done;
-                    setState(() {
-                      item.done = newDone;
-                    });
-                    try {
-                      await CartService.updateCartItemDone(item.id, newDone);
-                    } catch (e) {
-                      setState(() {
-                        item.done = !newDone;
-                      });
-                    }
-                  }
-                },
-                onLongPress: () {
-                  setState(() {
-                    _selectionMode = true;
-                    _selectedIds.add(item.id);
-                  });
-                },
-              );
-            },
+                const SizedBox(width: 10),
+              ],
+            ),
+
+            body: provider.loading
+                ? const Center(child: CircularProgressIndicator())
+                : (user == null || user.cart.isEmpty)
+                ? const Center(child: Text("Giỏ hàng trống"))
+                : ListView.separated(
+                    itemCount: user.cart.length,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      // Sắp xếp done xuống cuối
+                      final sortedItems = [...user.cart]
+                        ..sort((a, b) {
+                          if (a.done == b.done) return 0;
+                          return a.done ? 1 : -1;
+                        });
+                      final item = sortedItems[index];
+                      final isSelected = provider.selectedIds.contains(item.id);
+
+                      return ListTile(
+                        leading: provider.selectionMode
+                            ? Checkbox(
+                                value: isSelected,
+                                onChanged: (_) =>
+                                    provider.toggleSelection(item.id),
+                              )
+                            : null,
+                        title: Text(
+                          item.foodName,
+                          style: TextStyle(
+                            decoration: item.done
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                            color: item.done ? Colors.grey : Colors.black,
+                          ),
+                        ),
+                        trailing: !provider.selectionMode
+                            ? const Icon(Icons.expand_more)
+                            : null,
+                        onTap: () {
+                          if (provider.selectionMode) {
+                            provider.toggleSelection(item.id);
+                          } else {
+                            provider.toggleItemDone(item.id, !item.done);
+                          }
+                        },
+                        onLongPress: () => provider.enableSelection(item.id),
+                      );
+                    },
+                  ),
+
+            floatingActionButton: !provider.selectionMode
+                ? FloatingActionButton(
+                    onPressed: () => _showAddItemDialog(context, provider),
+                    child: const Icon(Icons.add),
+                  )
+                : null,
           );
         },
       ),
-      floatingActionButton: !_selectionMode
-          ? FloatingActionButton(
-              onPressed: _showAddItemDialog,
-              child: const Icon(Icons.add),
-            )
-          : null,
     );
   }
 }

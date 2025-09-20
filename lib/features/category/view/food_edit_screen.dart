@@ -191,7 +191,7 @@ class _FoodEditScreenState extends State<FoodEditScreen> {
                             fillColor: Colors.grey[300],
                           ),
                           borderRadius: BorderRadius.circular(12),
-                          items: ["Tủ lạnh", "Tủ đông", "Nhà bếp"]
+                          items: ["Ngăn lạnh", "Ngăn đông"]
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: e,
@@ -206,7 +206,7 @@ class _FoodEditScreenState extends State<FoodEditScreen> {
                               )
                               .toList(),
                           onChanged: (value) =>
-                              provider.updateLocation(value ?? "Tủ lạnh"),
+                              provider.updateLocation(value ?? "Ngăn lạnh"),
                         ),
                       ),
                     ],

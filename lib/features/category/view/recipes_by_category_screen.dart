@@ -1,70 +1,40 @@
-import 'package:da_food/features/food/model/recipe_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/services/recipe_service.dart';
 import '../view/recipe_detail_screen.dart';
+import '../view_model/recipe_provider.dart';
 
-class RecipesBySubCategoryScreen extends StatefulWidget {
-  final String category; // Category cha
+class RecipesBySubCategoryScreen extends StatelessWidget {
+  final String category;
 
   const RecipesBySubCategoryScreen({super.key, required this.category});
 
   @override
-  State<RecipesBySubCategoryScreen> createState() =>
-      _RecipesBySubCategoryScreenState();
-}
-
-class _RecipesBySubCategoryScreenState
-    extends State<RecipesBySubCategoryScreen> {
-  Map<String, List<RecipeModel>> recipesBySub = {};
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    loadRecipes();
-  }
-
-  Future<void> loadRecipes() async {
-    setState(() => isLoading = true);
-    try {
-      final data = await RecipeService.fetchRecipesByCategory(widget.category);
-
-      // Gom theo subCategory
-      Map<String, List<RecipeModel>> grouped = {};
-      for (var r in data) {
-        final sub = r.subCategory ?? "Khác";
-        if (!grouped.containsKey(sub)) grouped[sub] = [];
-        grouped[sub]!.add(r);
-      }
-
-      setState(() {
-        recipesBySub = grouped;
-      });
-    } catch (e) {
-      debugPrint("Lỗi lấy món ăn theo danh mục: $e");
-    } finally {
-      setState(() => isLoading = false);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        title: Text(
-          widget.category,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+    return ChangeNotifierProvider(
+      create: (_) => RecipesProvider(category)..loadRecipes(),
+      child: Scaffold(
+        appBar: AppBar(
+          titleSpacing: 0,
+          title: Text(
+            category,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : recipesBySub.isEmpty
-          ? const Center(child: Text("Không có món ăn nào"))
-          : ListView(
+        body: Consumer<RecipesProvider>(
+          builder: (context, provider, _) {
+            if (provider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (provider.recipesBySub.isEmpty) {
+              return const Center(child: Text("Không có món ăn nào"));
+            }
+
+            return ListView(
               padding: const EdgeInsets.all(12),
-              children: recipesBySub.entries.map((entry) {
+              children: provider.recipesBySub.entries.map((entry) {
                 final subCategory = entry.key;
                 final recipes = entry.value;
                 return Container(
@@ -75,9 +45,9 @@ class _RecipesBySubCategoryScreenState
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26,
-                        offset: const Offset(0, -3), // hướng bóng lên trên
-                        blurRadius: 8, // độ mờ
-                        spreadRadius: 1, // độ lan rộng
+                        offset: const Offset(0, -3),
+                        blurRadius: 8,
+                        spreadRadius: 1,
                       ),
                       BoxShadow(
                         color: Colors.black12,
@@ -146,7 +116,10 @@ class _RecipesBySubCategoryScreenState
                   ),
                 );
               }).toList(),
-            ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

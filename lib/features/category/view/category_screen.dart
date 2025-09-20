@@ -1,102 +1,35 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:da_food/features/category/view/recipes_by_category_screen.dart';
 import 'package:da_food/features/category/view/search_subcategory_screen.dart';
 import 'package:da_food/features/category/view_model/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/services/category_service.dart';
-import '../../../core/services/recipe_service.dart';
-import '../../food/model/category_model.dart';
 import 'add_food_screen.dart';
 import 'food_detail_screen.dart';
 
-class CategoryScreen extends StatefulWidget {
+class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
 
   @override
-  State<CategoryScreen> createState() => _CategoryScreenState();
-}
-
-class _CategoryScreenState extends State<CategoryScreen> {
-  List<Map<String, dynamic>> mealCategories = []; // sub của "Món ăn"
-  bool isLoadingMeals = false;
-
-  List<Category> allCategories = []; // toàn bộ category từ API
-  List<Map<String, dynamic>> apiSubCategories = []; // sub của category khác
-  bool isLoadingSub = false;
-
-  /// Load subCategory của "Món ăn" (RecipeService)
-  Future<void> loadMealCategories() async {
-    setState(() => isLoadingMeals = true);
-    try {
-      final data = await RecipeService.fetchMealCategories();
-      setState(() {
-        mealCategories = data;
-      });
-    } catch (e) {
-      debugPrint("Lỗi lấy danh mục món ăn: $e");
-    } finally {
-      setState(() => isLoadingMeals = false);
-    }
-  }
-
-  /// Load toàn bộ category từ API backend
-  Future<void> loadCategories() async {
-    try {
-      final data = await CategoryService().fetchCategories();
-      setState(() {
-        allCategories = data;
-      });
-    } catch (e) {
-      debugPrint("Lỗi load categories: $e");
-    }
-  }
-
-  /// Load subCategories theo categoryId
-  Future<void> loadSubCategories(String categoryId) async {
-    setState(() => isLoadingSub = true);
-    try {
-      if (allCategories.isEmpty) {
-        await loadCategories();
-      }
-      final selected = allCategories.firstWhere(
-        (c) => c.id == categoryId,
-        orElse: () => Category(id: "", icon: "", label: "", subCategories: []),
-      );
-      setState(() {
-        apiSubCategories = selected.subCategories
-            .map((e) => {"icon": e.icon, "label": e.label, "_id": e.id})
-            .toList();
-      });
-    } catch (e) {
-      debugPrint("Lỗi load subCategories: $e");
-    } finally {
-      setState(() => isLoadingSub = false);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    loadCategories(); // load toàn bộ category khi mở screen
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final selectedCategory = context.watch<CategoryProvider>().selectedCategory;
+    final provider = context.watch<CategoryProvider>();
+    final selectedCategory = provider.selectedCategory;
 
-    // Nếu chọn "Món ăn" thì load từ API RecipeService
+    // Nếu chọn "Món ăn" mà chưa có data thì load từ API
     if (selectedCategory == "Món ăn" &&
-        mealCategories.isEmpty &&
-        !isLoadingMeals) {
-      loadMealCategories();
+        provider.recipeCategories.isEmpty &&
+        !provider.isLoadingRecipe) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<CategoryProvider>().loadRecipeCategories();
+      });
     }
 
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
         title: const Text(
-          "Thể loại",
+          "Danh mục",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -111,8 +44,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             },
             icon: Icon(Icons.search),
           ),
-          const SizedBox(width: 8),
-          const Icon(Icons.more_vert),
           const SizedBox(width: 8),
         ],
       ),
@@ -129,18 +60,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 crossAxisCount: 5,
                 childAspectRatio: 0.75,
               ),
-              itemCount: allCategories.length,
+              itemCount: provider.allCategories.length,
               itemBuilder: (context, index) {
-                final item = allCategories[index];
+                final item = provider.allCategories[index];
                 final isSelected = item.label == selectedCategory;
 
                 return GestureDetector(
                   onTap: () {
-                    context.read<CategoryProvider>().selectCategory(item.label);
-
-                    // Nếu khác "Món ăn" thì load subCategories từ API
+                    provider.selectCategory(item.label);
                     if (item.label != "Món ăn") {
-                      loadSubCategories(item.id);
+                      provider.loadSubCategories(item.id);
                     }
                   },
                   child: Container(
@@ -153,7 +82,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               end: Alignment.bottomRight,
                             )
                           : null,
-                      color: isSelected ? null : Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: isSelected ? Colors.black : Colors.transparent,
@@ -161,13 +89,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       ),
                     ),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(item.icon, width: 40, height: 40),
                         const SizedBox(height: 6),
-                        Text(
+                        AutoSizeText(
                           item.label,
                           textAlign: TextAlign.center,
+                          maxLines: 2,
+                          minFontSize: 8,
                           style: TextStyle(
                             color: isSelected ? Colors.white : Colors.black,
                             fontSize: 14,
@@ -186,20 +115,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
               child: Divider(height: 25, thickness: 1, color: Colors.black),
             ),
 
-            // Nếu chọn category "Món ăn" thì load từ API RecipeService
             if (selectedCategory == "Món ăn") ...[
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                child: const Text(
+              const Padding(
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                child: Text(
                   "Món ăn",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),
-              if (isLoadingMeals)
+              if (provider.isLoadingRecipe)
                 const Center(child: CircularProgressIndicator())
               else
                 GridView.builder(
@@ -212,83 +136,56 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     crossAxisCount: 5,
                     childAspectRatio: 0.75,
                   ),
-                  itemCount: mealCategories.length + 1, // +1 để thêm ô dấu cộng
+                  itemCount: provider.recipeCategories.length,
                   itemBuilder: (context, index) {
-                    if (index == mealCategories.length) {
-                      return InkWell(
-                        onTap: () {
-                          debugPrint("Thêm món ăn mới");
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.add,
-                              size: 32,
-                              color: Colors.grey,
+                    final subItem = provider.recipeCategories[index];
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RecipesBySubCategoryScreen(
+                              category: subItem["label"],
                             ),
                           ),
-                        ),
-                      );
-                    }
-
-                    final subItem = mealCategories[index];
-                    return Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(8),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => RecipesBySubCategoryScreen(
-                                category: subItem["label"],
-                              ),
+                        );
+                      },
+                      child: Container(
+                        width: double.maxFinite,
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(subItem["icon"], width: 40, height: 40),
+                            const SizedBox(height: 6),
+                            AutoSizeText(
+                              subItem["label"],
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              minFontSize: 8,
+                              maxFontSize: 13,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 13),
                             ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Image.asset(
-                                subItem["icon"],
-                                width: 40,
-                                height: 40,
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                subItem["label"],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(fontSize: 13),
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
                       ),
                     );
                   },
                 ),
-            ]
-            // Nếu chọn category khác thì load subCategories từ API backend
-            else if (selectedCategory != null &&
-                selectedCategory != "Món ăn") ...[
+            ] else if (selectedCategory != null) ...[
               Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                padding: const EdgeInsets.only(right: 10, left: 10, bottom: 10),
                 child: Text(
-                  selectedCategory.toString(),
+                  selectedCategory,
                   style: const TextStyle(
-                    fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    fontSize: 16,
                   ),
                 ),
               ),
-              if (isLoadingSub)
+              if (provider.isLoadingSub)
                 const Center(child: CircularProgressIndicator())
               else
                 GridView.builder(
@@ -301,23 +198,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     crossAxisCount: 5,
                     childAspectRatio: 0.75,
                   ),
-                  itemCount:
-                      apiSubCategories.length + 1, // +1 để thêm ô dấu cộng
+                  itemCount: provider.apiSubCategories.length + 1,
                   itemBuilder: (context, index) {
-                    if (index == apiSubCategories.length) {
+                    if (index == provider.apiSubCategories.length) {
                       return InkWell(
-                        onTap: () async {
-                          final result = await Navigator.push(
+                        onTap: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) =>
                                   AddFoodScreen(category: selectedCategory),
                             ),
                           );
-
-                          if (result != null) {
-                            debugPrint("Đã thêm mới: $result");
-                          }
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -334,8 +226,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         ),
                       );
                     }
-
-                    final subItem = apiSubCategories[index];
+                    final subItem = provider.apiSubCategories[index];
                     return Material(
                       color: Colors.transparent,
                       child: InkWell(
@@ -345,13 +236,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => FoodDetailScreen(
-                                category: selectedCategory!,
+                                category: selectedCategory,
                                 subCategory: subItem["label"],
                               ),
                             ),
                           );
                         },
                         child: Container(
+                          width: double.maxFinite,
                           padding: const EdgeInsets.only(top: 10),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -362,9 +254,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 height: 40,
                               ),
                               const SizedBox(height: 6),
-                              Text(
+                              AutoSizeText(
                                 subItem["label"],
                                 textAlign: TextAlign.center,
+                                maxLines: 2,
+                                minFontSize: 8,
+                                maxFontSize: 13,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(fontSize: 13),
                               ),
                             ],

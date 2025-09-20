@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Permission phải đặt ở đây -->
+
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
 
@@ -16,7 +16,9 @@
 
         android:label="da_food"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true"
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"

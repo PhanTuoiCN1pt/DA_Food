@@ -55,7 +55,7 @@ class _SearchSubCategoryScreenState extends State<SearchSubCategoryScreen> {
                     controller: _controller,
                     autofocus: true,
                     decoration: InputDecoration(
-                      hintText: "Tìm kiếm subcategory...",
+                      hintText: "Tìm kiếm thực phẩm...",
                       border: InputBorder.none,
                       hintStyle: GoogleFonts.roboto(fontSize: 16),
                     ),
