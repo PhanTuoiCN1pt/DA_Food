@@ -233,7 +233,10 @@ class FoodIconHelper {
         return FoodType.cornMilk;
       case "lassi":
         return FoodType.lassi;
+      // --- Món ăn --
 
+      case "Bánh":
+        return FoodType.porkrecipe;
       // --- Đồ uống ---
       case "coca":
         return FoodType.coke;
@@ -688,6 +691,12 @@ class FoodIconHelper {
         return "assets/icons/dairyMilk/corn.png";
       case FoodType.lassi:
         return "assets/icons/dairyMilk/lassi.png";
+
+      // --- Món ăn ---
+      case FoodType.porkrecipe:
+        return "assets/icons/recipe/pork-roast.png";
+      case FoodType.unknown:
+        return "assets/icons/recipe/cooking.png";
 
       // --- Đồ uống ---
       case FoodType.coke:

@@ -233,4 +233,14 @@ enum FoodType {
   barley,
   brownRice,
   cornHat,
+
+  // recipe
+  porkrecipe,
+  chickenrecipe,
+  beefrecipe,
+  fishrecipe,
+  shrimprecipe,
+  squidrecipe,
+  vegetable,
+  egg,
 }

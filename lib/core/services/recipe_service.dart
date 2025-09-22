@@ -1,11 +1,11 @@
 import 'dart:convert';
 
+import 'package:da_food/helper/category_icon_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../connect/api_url.dart';
 import '../../features/food/model/recipe_model.dart';
-import '../../helper/category_icon_helper.dart';
 
 class RecipeService {
   static final String recipeBaseUrl = "$apiUrl/api/recipes";
