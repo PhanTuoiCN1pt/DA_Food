@@ -6,6 +6,7 @@ import 'package:da_food/features/user/view/widget/signup_form.dart';
 import 'package:da_food/features/user/view/widget/social_btn.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/notification_firebse.dart';
@@ -160,28 +161,28 @@ class _AuthScreenState extends State<AuthScreen>
                   ),
                 ),
 
-                // Logo
-                // AnimatedPositioned(
-                //   duration: defaultDuration,
-                //   top: _size.height * 0.06,
-                //   left: 0,
-                //   right: _isShowSignUp
-                //       ? -_size.width * 0.06
-                //       : _size.width * 0.06,
-                //   child: _isShowSignUp
-                //       ? Lottie.asset(
-                //           "assets/animations/Green Login.json",
-                //           width: 200,
-                //           height: 200,
-                //           fit: BoxFit.contain,
-                //         )
-                //       : Lottie.asset(
-                //           "assets/animations/j28uCA3Jg9.json",
-                //           width: 200,
-                //           height: 200,
-                //           fit: BoxFit.contain,
-                //         ),
-                // ),
+                //Logo
+                AnimatedPositioned(
+                  duration: defaultDuration,
+                  top: _size.height * 0.06,
+                  left: 0,
+                  right: _isShowSignUp
+                      ? -_size.width * 0.06
+                      : _size.width * 0.06,
+                  child: _isShowSignUp
+                      ? Lottie.asset(
+                          "assets/animations/Green Login.json",
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.contain,
+                        )
+                      : Lottie.asset(
+                          "assets/animations/j28uCA3Jg9.json",
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.contain,
+                        ),
+                ),
 
                 // Btn social
                 AnimatedPositioned(
