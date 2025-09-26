@@ -9,14 +9,12 @@ import '../widget/rounded_underline_indicator.dart';
 
 class HomeHeader extends StatelessWidget {
   final TabController tabController;
-  // final String username;
   final List<String> labels;
   final UserModel? user;
 
   const HomeHeader({
     super.key,
     required this.tabController,
-    // required this.username,
     required this.labels,
     this.user,
   });
@@ -28,9 +26,9 @@ class HomeHeader extends StatelessWidget {
       padding: const EdgeInsets.only(top: 40),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blue, Colors.purple],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          colors: [Color(0xFF2D99AE), Color(0xFFBCFEFE)],
+          begin: Alignment.topLeft,
+          end: Alignment.topRight,
         ),
       ),
       child: Column(
@@ -42,9 +40,9 @@ class HomeHeader extends StatelessWidget {
               // Bên trái: chữ
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(left: 16.0),
+                  padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
-                    "Fridge x ${user?.name.toString()}",
+                    "Fridge x ${user?.name ?? ''}",
                     style: GoogleFonts.oswald(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -58,54 +56,77 @@ class HomeHeader extends StatelessWidget {
 
               // Bên phải: icon
               IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => SearchFoodScreen()),
                   );
                 },
-                icon: Image.asset(
-                  "assets/icons/icon_app/search.png",
-                  width: 30,
-                  height: 30,
-                ),
+                icon: const Icon(Icons.search, size: 28, color: Colors.black),
               ),
               IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
                 onPressed: () {
                   if (user != null) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => CartScreen(userId: user!.id.toString()),
+                        builder: (_) => CartScreen(userId: user!.id!),
                       ),
                     );
                   }
                 },
-                icon: Image.asset(
-                  "assets/icons/icon_app/e-commerce.png",
-                  width: 30,
-                  height: 30,
+                icon: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Icon(
+                      Icons.shopping_cart,
+                      size: 28,
+                      color: Colors.black,
+                    ),
+                    if (user != null && user!.pendingCartCount > 0)
+                      Positioned(
+                        right: -4,
+                        top: -10,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 18,
+                            minHeight: 18,
+                          ),
+                          child: Text(
+                            '${user!.pendingCartCount}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
+
               IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SettingScreen(user: user!),
-                    ),
-                  );
+                  if (user != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SettingScreen(user: user!),
+                      ),
+                    );
+                  }
                 },
-                icon: Image.asset(
-                  "assets/icons/icon_app/three-dots.png",
-                  width: 30,
-                  height: 30,
+                icon: const Icon(
+                  Icons.more_vert,
+                  size: 28,
+                  color: Colors.black,
                 ),
               ),
             ],
@@ -114,7 +135,7 @@ class HomeHeader extends StatelessWidget {
           const SizedBox(height: 12),
 
           Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16),
+            padding: const EdgeInsets.only(left: 16.0, right: 16),
             child: TabBar(
               controller: tabController,
               isScrollable: false,
@@ -128,8 +149,8 @@ class HomeHeader extends StatelessWidget {
               ),
               indicatorSize: TabBarIndicatorSize.tab,
               dividerColor: Colors.transparent,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.black,
+              labelColor: Colors.black,
+              unselectedLabelColor: Color(0xFF004D40),
               tabs: labels
                   .map(
                     (label) => Text(

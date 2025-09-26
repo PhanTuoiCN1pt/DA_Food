@@ -8,8 +8,6 @@ class UserModel {
   String? fcmToken;
   DateTime? lastLogin;
   List<CartItem> cart;
-
-  // 👇 thêm trường notifyTime (dạng HH:mm)
   String? notifyTime;
 
   UserModel({
@@ -20,7 +18,7 @@ class UserModel {
     this.fcmToken,
     this.lastLogin,
     this.cart = const [],
-    this.notifyTime, // thêm vào constructor
+    this.notifyTime,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -36,7 +34,7 @@ class UserModel {
       cart: (json['cart'] as List<dynamic>? ?? [])
           .map((e) => CartItem.fromJson(e))
           .toList(),
-      notifyTime: json['notifyTime'], // 👈 map từ backend
+      notifyTime: json['notifyTime'],
     );
   }
 
@@ -49,7 +47,14 @@ class UserModel {
       "fcmToken": fcmToken,
       "lastLogin": lastLogin?.toIso8601String(),
       "cart": cart.map((e) => e.toJson()).toList(),
-      "notifyTime": notifyTime, // 👈 gửi về server
+      "notifyTime": notifyTime,
     };
+  }
+}
+
+/// Extension thêm tính năng tiện lợi cho UserModel
+extension UserCartExtension on UserModel {
+  int get pendingCartCount {
+    return cart.where((item) => item.done == false).length;
   }
 }

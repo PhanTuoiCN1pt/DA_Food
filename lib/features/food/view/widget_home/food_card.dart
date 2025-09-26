@@ -21,9 +21,17 @@ class FoodCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // Xác định text và màu nền theo daysLeft
     final bool isExpired = daysLeft <= 0;
+    final bool isSafe = daysLeft > 2;
+
     final String dayText = isExpired ? "D+${daysLeft.abs()}" : "D-$daysLeft";
-    final Color bgColor = isExpired ? Colors.red : TColors.grey;
-    final Color textColor = isExpired ? Colors.white : Colors.black;
+
+    final Color bgColor = isExpired
+        ? Colors.red
+        : (isSafe ? Colors.green : Colors.yellow);
+
+    final Color textColor = isExpired
+        ? Colors.white
+        : (isSafe ? Colors.white : Colors.black);
 
     return GestureDetector(
       onTap: onTap,

@@ -36,65 +36,68 @@ class _HomeScreenState extends State<HomeScreen>
     return Consumer<HomeProvider>(
       builder: (context, provider, child) {
         return Scaffold(
-          backgroundColor: Colors.purple,
-          body: Stack(
-            children: [
-              Column(
-                children: [
-                  // Header
-                  HomeHeader(
-                    tabController: _tabController,
-                    labels: labels,
-                    user: provider.user,
-                  ),
-
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: TColors.grey,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
-                      ),
-                      child: provider.loading
-                          ? const Center(child: CircularProgressIndicator())
-                          : TabBarView(
-                              controller: _tabController,
-                              children: [
-                                FoodTab(
-                                  locationLabel: "Ngăn lạnh",
-                                  foods: provider.fridgeFoods,
-                                  onReload: provider.loadFoods,
-                                ),
-                                FoodTab(
-                                  locationLabel: "Ngăn đông",
-                                  foods: provider.freezerFoods,
-                                  onReload: provider.loadFoods,
-                                ),
-                                KitchenTab(
-                                  onReload: provider.loadKitchen,
-                                  recipes: provider.recipes,
-                                ),
-                              ],
-                            ),
-                    ),
-                  ),
-                ],
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF2D99AE),
+                  Color(0xFFBCFEFE),
+                ], // cặp màu gradient
+                begin: Alignment.topLeft,
+                end: Alignment.topRight,
               ),
-
-              // Nút suggestMeal
-              if (provider.user != null)
-                Positioned(
-                  bottom: 80,
-                  right: 20,
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30),
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    // Header
+                    HomeHeader(
+                      tabController: _tabController,
+                      labels: labels,
+                      user: provider.user,
                     ),
+
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: TColors.grey,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
+                          ),
+                        ),
+                        child: provider.loading
+                            ? const Center(child: CircularProgressIndicator())
+                            : TabBarView(
+                                controller: _tabController,
+                                children: [
+                                  FoodTab(
+                                    locationLabel: "Ngăn lạnh",
+                                    foods: provider.fridgeFoods,
+                                    onReload: provider.loadFoods,
+                                  ),
+                                  FoodTab(
+                                    locationLabel: "Ngăn đông",
+                                    foods: provider.freezerFoods,
+                                    onReload: provider.loadFoods,
+                                  ),
+                                  KitchenTab(
+                                    onReload: provider.loadKitchen,
+                                    recipes: provider.recipes,
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Nút suggestMeal
+                if (provider.user != null)
+                  Positioned(
+                    bottom: 70,
+                    right: -30,
                     child: IconButton(
                       onPressed: () {
                         Navigator.push(
@@ -106,27 +109,22 @@ class _HomeScreenState extends State<HomeScreen>
                         );
                       },
                       icon: Image.asset(
-                        "assets/icons/cooking/chef.png",
-                        width: 30,
-                        height: 30,
+                        "assets/icons/icon_app/icon_app_no_text.png",
+                        scale: 5,
                       ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
 
           // FAB add
           floatingActionButton: Container(
-            width: 60,
-            height: 60,
+            width: 55,
+            height: 55,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [Colors.blue, Colors.purple],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: Color(0xFF004D40),
             ),
             child: IconButton(
               icon: const Icon(Icons.add, color: Colors.white, size: 28),

@@ -16,6 +16,9 @@ class CartProvider extends ChangeNotifier {
     loadUser();
   }
 
+  int get pendingCartCount =>
+      user?.cart.where((item) => !item.done).length ?? 0;
+
   Future<void> loadUser() async {
     loading = true;
     notifyListeners();

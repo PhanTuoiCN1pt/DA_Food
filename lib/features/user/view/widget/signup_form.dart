@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
@@ -13,6 +13,13 @@ class SignUpForm extends StatelessWidget {
     required this.passwordController,
     required this.signUpFormKey,
   });
+
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +48,7 @@ class SignUpForm extends StatelessWidget {
     );
 
     return Form(
-      key: signUpFormKey,
+      key: widget.signUpFormKey,
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.12,
@@ -49,12 +56,11 @@ class SignUpForm extends StatelessWidget {
         child: Column(
           children: [
             const Spacer(),
-
             SizedBox(height: 95),
 
             /// Name
             TextFormField(
-              controller: nameController,
+              controller: widget.nameController,
               style: const TextStyle(color: Colors.white),
               decoration: inputDecoration.copyWith(
                 labelText: "Tên",
@@ -71,7 +77,7 @@ class SignUpForm extends StatelessWidget {
 
             /// Email
             TextFormField(
-              controller: emailController,
+              controller: widget.emailController,
               style: const TextStyle(color: Colors.white),
               decoration: inputDecoration.copyWith(
                 labelText: "Email",
@@ -91,12 +97,21 @@ class SignUpForm extends StatelessWidget {
 
             /// Password
             TextFormField(
-              controller: passwordController,
+              controller: widget.passwordController,
               style: const TextStyle(color: Colors.white),
-              obscureText: true,
+              obscureText: _obscureText,
               decoration: inputDecoration.copyWith(
                 labelText: "Mật khẩu",
                 prefixIcon: const Icon(Icons.lock),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.white70,
+                  ),
+                  onPressed: () {
+                    setState(() => _obscureText = !_obscureText);
+                  },
+                ),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -109,7 +124,6 @@ class SignUpForm extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20),
-
             const Spacer(flex: 2),
           ],
         ),

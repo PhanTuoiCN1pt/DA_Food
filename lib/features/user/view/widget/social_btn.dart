@@ -8,6 +8,14 @@ class SocialBtn extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        // IconButton(
+        //   onPressed: () {},
+        //   icon: Image.asset(
+        //     "assets/icons/icon_app/icon_app_no_text.png",
+        //     width: 150,
+        //     height: 150,
+        //   ),
+        // ),
         IconButton(
           onPressed: () {},
           icon: Image.asset(

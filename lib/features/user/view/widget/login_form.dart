@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-class LoginForm extends StatelessWidget {
+import 'forgot_password_screen.dart';
+
+class LoginForm extends StatefulWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final GlobalKey<FormState> formKey;
@@ -14,23 +16,29 @@ class LoginForm extends StatelessWidget {
   });
 
   @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  bool _obscureText = true;
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: MediaQuery.of(context).size.width * 0.12,
       ),
       child: Form(
-        key: formKey,
+        key: widget.formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const Spacer(flex: 1),
-
             SizedBox(height: 70),
 
             /// Email
             TextFormField(
-              controller: emailController,
+              controller: widget.emailController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Vui lòng nhập email";
@@ -42,7 +50,7 @@ class LoginForm extends StatelessWidget {
               },
               decoration: InputDecoration(
                 labelText: "Email",
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
@@ -55,7 +63,7 @@ class LoginForm extends StatelessWidget {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.black),
+                  borderSide: const BorderSide(color: Colors.black),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -68,8 +76,8 @@ class LoginForm extends StatelessWidget {
 
             /// Password
             TextFormField(
-              controller: passwordController,
-              obscureText: true,
+              controller: widget.passwordController,
+              obscureText: _obscureText, // 👈 dùng biến
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Vui lòng nhập mật khẩu";
@@ -81,11 +89,20 @@ class LoginForm extends StatelessWidget {
               },
               decoration: InputDecoration(
                 labelText: "Mật khẩu",
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
                 prefixIcon: const Icon(Iconsax.lock),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscureText ? Iconsax.eye_slash : Iconsax.eye,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    setState(() => _obscureText = !_obscureText);
+                  },
+                ),
                 filled: true,
                 fillColor: Colors.grey.shade100,
                 contentPadding: const EdgeInsets.symmetric(
@@ -94,7 +111,7 @@ class LoginForm extends StatelessWidget {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.black),
+                  borderSide: const BorderSide(color: Colors.black),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -104,7 +121,17 @@ class LoginForm extends StatelessWidget {
               ),
             ),
 
-            TextButton(onPressed: () {}, child: Text("Quên mật khẩu")),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ForgotPasswordScreen(),
+                  ),
+                );
+              },
+              child: const Text("Quên mật khẩu"),
+            ),
             const Spacer(flex: 2),
           ],
         ),

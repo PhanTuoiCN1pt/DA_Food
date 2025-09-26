@@ -15,7 +15,7 @@ class AuthService {
     required BuildContext context,
     required String email,
     required String password,
-    required String fcmToken, // 👈 Thêm fcmToken khi login
+    required String fcmToken,
 
     required VoidCallback onSuccess,
   }) async {
@@ -34,7 +34,7 @@ class AuthService {
         body: jsonEncode({
           'email': email,
           'password': password,
-          'fcmToken': fcmToken, // 👈 gửi token lên server
+          'fcmToken': fcmToken,
         }),
       );
 
@@ -124,7 +124,7 @@ class AuthService {
           "name": name,
           "email": email,
           "password": password,
-          "fcmToken": fcmToken, // 👈 gửi lên
+          "fcmToken": fcmToken,
         }),
       );
 
@@ -151,85 +151,10 @@ class AuthService {
     }
   }
 
-  /// -------------------- FORGOT PASSWORD --------------------
-  static Future<void> forgotPassword({
-    required BuildContext context,
-    required String email,
-    required VoidCallback onSuccess,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse("$baseUrl/forgot-password"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": email}),
-      );
-
-      debugPrint("STATUS CODE: ${response.statusCode}");
-      debugPrint("BODY: ${response.body}");
-
-      if (response.statusCode == 200) {
-        Loaders.successSnackBar(
-          title: "Thành công",
-          message: "Đã gửi link reset mật khẩu tới email của bạn!",
-        );
-        onSuccess();
-      } else {
-        Loaders.errorSnackBar(
-          title: "Thất bại",
-          message: "Email không tồn tại!",
-        );
-      }
-    } catch (e) {
-      Loaders.warningSnackBar(
-        title: "Lỗi kết nối",
-        message: "Không thể kết nối server: $e",
-      );
-    }
-  }
-
-  /// -------------------- RESET PASSWORD --------------------
-  static Future<void> resetPassword({
-    required BuildContext context,
-    required String token,
-    required String newPassword,
-    required VoidCallback onSuccess,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse("$baseUrl/reset-password"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"token": token, "password": newPassword}),
-      );
-
-      debugPrint("STATUS CODE: ${response.statusCode}");
-      debugPrint("BODY: ${response.body}");
-
-      if (response.statusCode == 200) {
-        Loaders.successSnackBar(
-          title: "Thành công",
-          message: "Mật khẩu đã được thay đổi!",
-        );
-        onSuccess();
-      } else {
-        Loaders.errorSnackBar(
-          title: "Thất bại",
-          message: "Token không hợp lệ hoặc đã hết hạn!",
-        );
-      }
-    } catch (e) {
-      Loaders.warningSnackBar(
-        title: "Lỗi kết nối",
-        message: "Không thể kết nối server: $e",
-      );
-    }
-  }
-
   /// -------------------- CHANGE PASSWORD --------------------
-  static Future<void> changePassword({
-    required BuildContext context,
-    required String currentPassword,
+  static Future<bool> changePassword({
+    required String oldPassword,
     required String newPassword,
-    required VoidCallback onSuccess,
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -242,31 +167,45 @@ class AuthService {
           "Authorization": "Bearer $token",
         },
         body: jsonEncode({
-          "currentPassword": currentPassword,
+          "oldPassword": oldPassword,
           "newPassword": newPassword,
         }),
       );
 
-      debugPrint("STATUS CODE: ${response.statusCode}");
-      debugPrint("BODY: ${response.body}");
-
-      if (response.statusCode == 200) {
-        Loaders.successSnackBar(
-          title: "Thành công",
-          message: "Đổi mật khẩu thành công!",
-        );
-        onSuccess();
-      } else {
-        Loaders.errorSnackBar(
-          title: "Thất bại",
-          message: "Mật khẩu hiện tại không đúng!",
-        );
-      }
+      return response.statusCode == 200;
     } catch (e) {
-      Loaders.warningSnackBar(
-        title: "Lỗi kết nối",
-        message: "Không thể kết nối server: $e",
+      debugPrint("❌ Exception changePassword: $e");
+      return false;
+    }
+  }
+
+  /// -------------------- FORGOT PASSWORD --------------------
+  static Future<bool> forgotPassword(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/forgot-password"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"email": email}),
       );
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint("❌ Exception forgotPassword: $e");
+      return false;
+    }
+  }
+
+  /// -------------------- RESET PASSWORD --------------------
+  static Future<bool> resetPassword(String otp, String newPassword) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/reset-password/$otp"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"newPassword": newPassword}),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint("❌ Exception resetPassword: $e");
+      return false;
     }
   }
 
